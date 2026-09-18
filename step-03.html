@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WAF++ - ADR-000</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="step-page">
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="WAF++ logo">
+      <span>WAF++ · ADR-000</span>
+    </a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+      </svg>
+    </button>
+  </header>
+
+  <main class="journey-main">
+        <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step active" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
+      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
+      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
+      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
+      <a class="step" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
+      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
+      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+    </nav>
+
+    <section class="step-hero">
+      <p class="step-kicker">Step 3 of 10</p>
+      <h1>Repository Landscape</h1>
+      <p class="step-lead">
+        The umbrella directory groups independent repositories. Every component is its own git repository with its own lifecycle; they are wired together by the central result contract and the server API.
+      </p>
+    </section>
+
+    <article class="content-grid">
+      <section class="card card-wide">
+        <h2>📦 Included repositories</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Repository</th><th>Short name</th><th>Technology</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>framework</code></td><td>German docs</td><td>Antora / AsciiDoc</td><td>German framework edition</td></tr>
+              <tr><td><code>framework-en</code> (<code>main-en</code>)</td><td>English docs</td><td>Antora / AsciiDoc</td><td>English framework edition</td></tr>
+              <tr><td><code>waf2p.github.io</code></td><td>Website</td><td>Jekyll + Antora</td><td>Public site, blog, integrated docs</td></tr>
+              <tr><td><code>pass</code></td><td>wafpass-core</td><td>Python 3.11+</td><td>IaC compliance engine, CLI, PDF reporting</td></tr>
+              <tr><td><code>wafpass-server</code></td><td>Server</td><td>FastAPI / SQLAlchemy / PostgreSQL</td><td>REST API for scan results</td></tr>
+              <tr><td><code>wafpass-dashboard</code></td><td>Dashboard</td><td>React 18 / TypeScript / Vite</td><td>Browser SPA visualisation</td></tr>
+              <tr><td><code>wafpass-mcp</code></td><td>MCP bridge</td><td>Python / FastAPI / MCP SDK</td><td>AI assistant integration</td></tr>
+              <tr><td><code>wafpass-action</code></td><td>GitHub Action</td><td>Python composite action</td><td>CI/CD scan runner</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🗺️ Project tree</h2>
+        <p>Use this tree as a navigation aid when onboarding. It shows the most important sub-projects and files inside each repository.</p>
+        <pre class="ascii-art">waf++/
+├── framework/                           # German framework docs (Antora component)
+│   ├── .git/                            # Same repository as framework-en, branch main-de
+│   ├── antora.yml                       # Component descriptor: name=wafpp, version=1.0.2-de
+│   ├── modules/
+│   │   ├── ROOT/pages/                  # Frame content: home, roadmap, resources
+│   │   ├── pillar-security/pages/       # Security pillar
+│   │   ├── pillar-cost/pages/           # Cost Optimization pillar
+│   │   ├── pillar-efficiancy/pages/     # Performance Efficiency pillar
+│   │   ├── pillar-reliability/pages/    # Reliability pillar
+│   │   ├── pillar-excellence/pages/     # Operational Excellence pillar
+│   │   ├── pillar-sustainability/pages/ # Sustainability pillar
+│   │   ├── pillar-sovereign/pages/      # Sovereign pillar
+│   │   ├── pillar-agentic/pages/        # Agentic pillar
+│   │   └── controls/
+│   │       ├── pages/                   # Controls catalog pages
+│   │       └── controls/*.yml           # Machine-readable YAML control definitions
+│   └── AGENTS.md                        # Antora developer guidelines
+│
+├── framework-en/                        # English framework docs (Antora component)
+│   ├── .git/                            # Same repository as framework, branch main-en
+│   ├── antora.yml                       # Component descriptor: version=1.0.2-en
+│   └── modules/                         # Same pillar layout as framework/
+│
+├── waf2p.github.io/                     # Public website (Jekyll + Antora)
+│   ├── _config.yml                      # Jekyll configuration (keep_files: [docs])
+│   ├── _data/                           # Navigation, footer, conferences, docs metadata
+│   ├── _includes/                       # Reusable HTML components
+│   ├── _layouts/                        # Page layouts
+│   ├── _posts/                          # Blog posts (Markdown)
+│   ├── _sass/                           # SCSS stylesheets
+│   ├── _staff_members/                  # Team member profiles
+│   ├── antora-playbook.yml              # Production Antora config
+│   ├── antora-playbook-local.yml        # Local dev Antora config
+│   ├── Taskfile.yml                     # Build automation
+│   ├── Gemfile                          # Ruby dependencies
+│   ├── package.json                     # Node dependencies (Antora)
+│   └── _site/                           # Build output
+│
+├── pass/                                # wafpass-core compliance engine (Python)
+│   ├── wafpass/
+│   │   ├── cli.py                       # Typer CLI entry point
+│   │   ├── schema.py                    # wafpass-result.json Pydantic contract
+│   │   ├── iac/
+│   │   │   ├── base.py                  # IaCBlock / IaCState / IaCPlugin protocols
+│   │   │   ├── registry.py              # Plugin registry
+│   │   │   └── plugins/
+│   │   │       ├── terraform.py         # Terraform plugin (default)
+│   │   │       ├── cdk.py               # AWS CDK plugin
+│   │   │       ├── pulumi.py            # Pulumi plugin
+│   │   │       └── bicep.py             # Bicep stub
+│   │   ├── export/
+│   │   │   └── plugins/                 # Grafana, webhook, Slack, Datadog, Splunk stubs
+│   │   ├── serve/                       # Legacy embedded FastAPI web UI
+│   │   └── state/                       # Run versioning / .wafpass-state logic
+│   ├── controls/                        # Bundled WAF++ YAML controls
+│   ├── hooks/                           # Git pre-commit hooks
+│   ├── docker/                          # Grafana/Prometheus/Pushgateway observability stack
+│   ├── tests/
+│   ├── pyproject.toml                   # Package: wafpass-core v1.1.2
+│   └── VERSION
+│
+├── wafpass-server/                      # FastAPI REST API + PostgreSQL persistence
+│   ├── wafpass_server/
+│   │   ├── main.py                      # FastAPI app + startup tasks
+│   │   ├── models.py                    # SQLAlchemy models
+│   │   ├── routers/
+│   │   │   ├── runs.py                  # Ingest / list scan results
+│   │   │   ├── controls.py              # Controls catalogue
+│   │   │   ├── auth.py                  # JWT login, users, refresh tokens
+│   │   │   ├── sso.py                   # OIDC / SAML2 providers + group mappings
+│   │   │   ├── waivers.py               # Control waivers
+│   │   │   ├── risks.py                 # Risk acceptances
+│   │   │   ├── evidence.py              # Immutable audit packages
+│   │   │   ├── achievements.py          # Maturity tier achievements
+│   │   │   ├── leaderboard.py           # Hall of Fame rankings
+│   │   │   ├── sandbox.py               # In-process IaC snippet evaluation
+│   │   │   └── widgets.py               # Public dashboard widgets
+│   ├── alembic/                         # Database migrations
+│   ├── tests/
+│   ├── Dockerfile                       # Build context = umbrella directory
+│   ├── entrypoint.sh                    # Runs migrations + starts uvicorn
+│   ├── pyproject.toml                   # Package: wafpass-server v1.1.0
+│   └── VERSION
+│
+├── wafpass-dashboard/                   # React SPA (compliance visualisation)
+│   ├── src/
+│   │   ├── components/                  # Shared UI components
+│   │   ├── pages/                       # Route pages (Dashboard, Findings, Evidence, etc.)
+│   │   ├── hooks/                       # React hooks
+│   │   ├── services/                    # API clients
+│   │   ├── i18n/                        # Translations (en, de, fr, es, pt, el)
+│   │   ├── App.tsx                      # Router + layout
+│   │   └── main.tsx                     # Entry point
+│   ├── public/
+│   ├── nginx.conf                       # Production nginx proxy rules
+│   ├── vite.config.ts                   # Vite dev + proxy config
+│   ├── vitest.config.ts
+│   ├── package.json                     # Package: wafpass-dashboard v1.1.0
+│   └── Dockerfile
+│
+├── wafpass-mcp/                         # Model Context Protocol bridge
+│   ├── wafpass_mcp/
+│   │   ├── main.py                      # HTTP/SSE MCP server
+│   │   ├── stdio_server.py              # stdio transport for Claude Desktop
+│   │   ├── configure.py                 # Interactive login helper
+│   │   └── openapi_mapper.py            # OpenAPI → MCP tool converter
+│   ├── scripts/                         # Manual MCP client test scripts
+│   ├── tests/
+│   ├── Dockerfile
+│   └── pyproject.toml                   # Package: wafpass-mcp v0.1.0
+│
+└── wafpass-action/                      # GitHub Action
+    ├── action.yml                       # Composite action metadata
+    ├── run.py                           # Runner script
+    ├── pyproject.toml                   # Package: wafpass-action v0.1.1
+    └── VERSION
+        </pre>
+      </section>
+    </article>
+
+    <nav class="step-nav" aria-label="Previous and next steps">
+      <a class="btn btn-secondary" href="step-02.html">← Framework & framework-en</a>
+      <a class="btn btn-primary" href="step-04.html">Next: High-Level Architecture →</a>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-compliance">
+      <span>GDPR</span>
+      <span>SOC 2</span>
+      <span>HIPAA</span>
+      <span>BSI C5</span>
+      <span>ISO 27001</span>
+      <span>NIS2</span>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <ul>
+        <li><a href="https://waf2p.dev/blog/" target="_blank" rel="noopener">Blog</a></li>
+        <li><a href="https://waf2p.dev/about/" target="_blank" rel="noopener">About</a></li>
+        <li><a href="https://waf2p.dev/vision/" target="_blank" rel="noopener">Vision</a></li>
+        <li><a href="https://waf2p.dev/faq/" target="_blank" rel="noopener">FAQ</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://waf2p.dev/docs/" target="_blank" rel="noopener">Documentation</a></li>
+        <li><a href="https://waf2p.dev/conferences/" target="_blank" rel="noopener">Conferences</a></li>
+        <li><a href="https://waf2p.dev/roadmap/" target="_blank" rel="noopener">Roadmap</a></li>
+        <li><a href="https://waf2p.dev/changelog/" target="_blank" rel="noopener">Changelog</a></li>
+        <li><a href="https://waf2p.dev/stay-updated/" target="_blank" rel="noopener">Stay Updated</a></li>
+        <li><a href="https://waf2p.dev/contributing/" target="_blank" rel="noopener">Contributing</a></li>
+        <li><a href="https://waf2p.dev/code-of-conduct/" target="_blank" rel="noopener">Code of Conduct</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://waf2p.dev/press/" target="_blank" rel="noopener">Press &amp; Media</a></li>
+        <li><a href="https://waf2p.dev/legal/" target="_blank" rel="noopener">Legal</a></li>
+        <li><a href="https://waf2p.dev/governance-community/" target="_blank" rel="noopener">Governance &amp; Community</a></li>
+        <li><a href="https://waf2p.dev/rfc/" target="_blank" rel="noopener">RFC Tracker</a></li>
+        <li><a href="https://waf2p.dev/glossary/" target="_blank" rel="noopener">Glossary</a></li>
+        <li><a href="https://waf2p.dev/roles/" target="_blank" rel="noopener">Roles</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://github.com/waf2p/" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://join.slack.com/t/waf2p/shared_invite/zt-3rmu39vuf-nESwJheP4WAHxp15gEXgsA" target="_blank" rel="noopener">Slack Community</a></li>
+        <li><a href="https://waf2p.dev/feed.xml" target="_blank" rel="noopener">RSS</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-banner">
+      <a href="https://www.cloudnativeconference.de/" target="_blank" rel="noopener">
+        <img src="https://waf2p.dev/assets/images/cloud-native-conference.png" alt="Cloud Native Conference">
+      </a>
+    </div>
+
+    <div class="footer-legal">
+      <p>© 2026 WAF++ · <a href="https://adr-000.waf2p.dev" target="_blank" rel="noopener">ADR-000</a> · <a href="https://waf2p.dev/impressum/" target="_blank" rel="noopener">Imprint</a> · Powered by GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="nav.js"></script>
+</body>
+</html>

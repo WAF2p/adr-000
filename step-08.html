@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WAF++ - ADR-000</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="step-page">
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="WAF++ logo">
+      <span>WAF++ · ADR-000</span>
+    </a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+      </svg>
+    </button>
+  </header>
+
+  <main class="journey-main">
+        <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
+      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
+      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
+      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
+      <a class="step active" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
+      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
+      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+    </nav>
+
+    <section class="step-hero">
+      <p class="step-kicker">Step 8 of 10</p>
+      <h1>wafpass-dashboard</h1>
+      <p class="step-lead">
+        The browser-based cockpit. It visualises scan history, drill-down findings, trends, and compliance posture for teams and auditors.
+      </p>
+    </section>
+
+    <article class="content-grid">
+      <section class="card card-wide">
+        <h2>🧰 Technology stack & patterns</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h4>React 18+</h4>
+            <p>Functional components and hooks. Keep components small and compose through props, not inheritance.</p>
+          </div>
+          <div class="feature-card">
+            <h4>TypeScript</h4>
+            <p>Strict mode enabled. Define shared types in <code>src/types/</code> and derive API shapes from the backend OpenAPI spec.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Vite</h4>
+            <p>Fast dev server and production builds. Environment variables use <code>VITE_*</code> prefix.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Tailwind CSS</h4>
+            <p>Utility-first styling. Custom design tokens live in <code>tailwind.config.js</code>.</p>
+          </div>
+          <div class="feature-card">
+            <h4>TanStack Query</h4>
+            <p>Server-state cache, loading/error UI, background refetching, and optimistic updates.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Recharts / Chart.js</h4>
+            <p>Trend charts, radar diagrams, and pie charts for pillar distribution and severity.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🗂️ Repository layout</h2>
+        <pre class="ascii-art">wafpass-dashboard/
+├── public/
+├── src/
+│   ├── main.tsx              # React root, Vite entry
+│   ├── App.tsx               # Router shell and layout
+│   ├── routes/               # Page-level route components
+│   │   ├── Dashboard.tsx
+│   │   ├── RunDetail.tsx
+│   │   ├── ProjectList.tsx
+│   │   └── Settings.tsx
+│   ├── components/           # Reusable UI blocks
+│   │   ├── ui/               # Buttons, cards, inputs, badges
+│   │   ├── charts/           # Recharts wrappers
+│   │   └── findings/         # Finding cards, filters, tables
+│   ├── hooks/                # Custom hooks (useRuns, useProjects)
+│   ├── api/                  # Axios/fetch client and generated types
+│   ├── types/                # Shared TypeScript types
+│   ├── stores/               # Zustand or Context state slices
+│   ├── lib/                  # Utilities (dates, formatters, theme)
+│   └── styles/               # Global CSS and Tailwind directives
+├── tests/
+│   ├── unit/                 # Vitest + React Testing Library
+│   └── e2e/                  # Playwright smoke tests
+├── index.html
+├── package.json
+├── tailwind.config.js
+├── tsconfig.json
+└── vite.config.ts
+        </pre>
+      </section>
+
+      <section class="card">
+        <h2>🖥️ Run the dashboard locally</h2>
+        <pre class="terminal"><code>cd wafpass-dashboard
+npm install
+
+# Point to a local server (or mock proxy)
+echo "VITE_API_URL=http://localhost:8000/api/v1" > .env.local
+
+npm run dev
+# open http://localhost:5173
+
+# Storybook (if configured)
+npm run storybook
+
+# Production build
+npm run build
+npm run preview
+</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>🎨 Code style & guidelines</h2>
+        <ul>
+          <li><strong>Formatter:</strong> <code>prettier</code> with project config; run <code>npm run format</code>.</li>
+          <li><strong>Linter:</strong> <code>eslint</code> with TypeScript and React hooks rules; zero warnings in CI.</li>
+          <li><strong>Components:</strong> one component per file; co-locate styles if they are component-specific.</li>
+          <li><strong>Hooks:</strong> extract data-fetching and side effects into custom hooks; keep UI hooks lean.</li>
+          <li><strong>Types:</strong> no <code>any</code> without justification; prefer interfaces for props and types for unions/derived shapes.</li>
+          <li><strong>Accessibility:</strong> semantic HTML, ARIA labels, keyboard focus states, and colour-contrast checks.</li>
+          <li><strong>Performance:</strong> memoise expensive renders and chart data; lazy-load route components.</li>
+          <li><strong>Commits:</strong> conventional commits, e.g. <code>feat(dashboard): add severity filter</code>.</li>
+        </ul>
+        <pre class="terminal"><code># Local quality gates
+npm run lint
+npm run format:check
+npm run typecheck
+npm run test
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🎨 Design system & glass-morphism</h2>
+        <p>The dashboard shares the same visual language as <a href="https://waf2p.dev" target="_blank" rel="noopener">waf2p.dev</a>: soft gradients, translucent cards, subtle borders, and theme-aware colour tokens.</p>
+        <ul>
+          <li>Use CSS variables for light/dark palettes; do not hard-code colours.</li>
+          <li>Cards use a semi-transparent background with backdrop blur for the glass effect.</li>
+          <li>Accent colour is the WAF++ blue (#0094FF); severity colours are red/amber/green/neutral.</li>
+          <li>The theme toggle sets <code>data-theme</code> on the document root and persists the choice.</li>
+          <li>Mobile-first grids: 1 column on phone, 2 on tablet, 3+ on desktop.</li>
+        </ul>
+        <pre class="terminal"><code>/* Example glass card (Tailwind + custom CSS) */
+.glass-card {
+  @apply rounded-2xl border p-6;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  border-color: rgba(15, 23, 42, 0.09);
+}
+
+[data-theme="dark"] .glass-card {
+  background: rgba(15, 23, 42, 0.60);
+  border-color: rgba(148, 163, 184, 0.14);
+}
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🧪 Testing strategy</h2>
+        <ol>
+          <li><strong>Unit tests:</strong> Vitest + React Testing Library for components, hooks, and utilities.</li>
+          <li><strong>Mocked API:</strong> MSW (Mock Service Worker) intercepts calls during tests and Storybook.</li>
+          <li><strong>Visual regression:</strong> Storybook stories for every reusable component.</li>
+          <li><strong>E2E:</strong> Playwright runs login, upload, navigation, and export flows against a real backend.</li>
+          <li><strong>Accessibility:</strong> axe-core in CI catches missing labels and contrast issues.</li>
+        </ol>
+        <pre class="terminal"><code># Watch mode during development
+npm run test -- --watch
+
+# Run a single test file
+npx vitest run src/components/charts/PillarChart.test.tsx
+
+# E2E
+npx playwright test
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🔌 API integration</h2>
+        <p>The dashboard consumes <code>wafpass-server</code> REST endpoints. All server-state lives in TanStack Query; local UI state lives in Zustand or React Context. Generated types from the OpenAPI spec are kept in <code>src/api/openapi.ts</code> and refreshed when the backend contract changes.</p>
+        <pre class="terminal"><code>// src/hooks/useRuns.ts example
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/api/client';
+
+export function useRuns(projectId: string) {
+  return useQuery({
+    queryKey: ['runs', projectId],
+    queryFn: () => apiClient.get(`/projects/${projectId}/runs`).then(r => r.data),
+  });
+}
+</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>🚀 Developer onboarding flow</h2>
+        <ol class="checklist">
+          <li>Clone <code>wafpass-dashboard</code> and install dependencies.</li>
+          <li>Start <code>wafpass-server</code> locally (or use MSW mocks) and set <code>VITE_API_URL</code>.</li>
+          <li>Explore <code>src/routes/Dashboard.tsx</code> and <code>src/components/charts/</code>.</li>
+          <li>Add a small UI component with a Storybook story and a unit test.</li>
+          <li>Run lint, typecheck, and tests before opening a PR.</li>
+        </ol>
+        <pre class="terminal"><code>cd wafpass-dashboard
+npm install
+echo "VITE_API_URL=http://localhost:8000/api/v1" > .env.local
+npm run dev
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🗃️ State management rules</h2>
+        <ul style="margin-bottom: 0;">
+          <li><strong>Server state:</strong> TanStack Query only. Do not mirror server data in a global store.</li>
+          <li><strong>Local state:</strong> <code>useState</code> for component-local UI (filters, toggles).</li>
+          <li><strong>Shared UI state:</strong> Zustand for theme, sidebar, notifications, and active project.</li>
+          <li><strong>Derived data:</strong> compute charts and aggregates in memoised selectors, not in render body.</li>
+        </ul>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🔒 Security & trust assumptions</h2>
+        <ul style="margin-bottom: 0;">
+          <li>Never store API keys in frontend code or environment files that ship to the browser.</li>
+          <li>The dashboard relies on the server's auth layer; route guards redirect unauthenticated users.</li>
+          <li>Sanitise any user-generated content rendered as HTML to avoid XSS.</li>
+          <li>Keep charting libraries updated; they handle SVG/DOM and can introduce DOM-based XSS if compromised.</li>
+        </ul>
+      </section>
+    </article>
+
+    <nav class="step-nav" aria-label="Previous and next steps">
+      <a class="btn btn-secondary" href="step-07.html">← wafpass-server</a>
+      <a class="btn btn-primary" href="step-09.html">Next: Integrations →</a>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-compliance">
+      <span>GDPR</span>
+      <span>SOC 2</span>
+      <span>HIPAA</span>
+      <span>BSI C5</span>
+      <span>ISO 27001</span>
+      <span>NIS2</span>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <ul>
+        <li><a href="https://waf2p.dev/blog/" target="_blank" rel="noopener">Blog</a></li>
+        <li><a href="https://waf2p.dev/about/" target="_blank" rel="noopener">About</a></li>
+        <li><a href="https://waf2p.dev/vision/" target="_blank" rel="noopener">Vision</a></li>
+        <li><a href="https://waf2p.dev/faq/" target="_blank" rel="noopener">FAQ</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://waf2p.dev/docs/" target="_blank" rel="noopener">Documentation</a></li>
+        <li><a href="https://waf2p.dev/conferences/" target="_blank" rel="noopener">Conferences</a></li>
+        <li><a href="https://waf2p.dev/roadmap/" target="_blank" rel="noopener">Roadmap</a></li>
+        <li><a href="https://waf2p.dev/changelog/" target="_blank" rel="noopener">Changelog</a></li>
+        <li><a href="https://waf2p.dev/stay-updated/" target="_blank" rel="noopener">Stay Updated</a></li>
+        <li><a href="https://waf2p.dev/contributing/" target="_blank" rel="noopener">Contributing</a></li>
+        <li><a href="https://waf2p.dev/code-of-conduct/" target="_blank" rel="noopener">Code of Conduct</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://waf2p.dev/press/" target="_blank" rel="noopener">Press &amp; Media</a></li>
+        <li><a href="https://waf2p.dev/legal/" target="_blank" rel="noopener">Legal</a></li>
+        <li><a href="https://waf2p.dev/governance-community/" target="_blank" rel="noopener">Governance &amp; Community</a></li>
+        <li><a href="https://waf2p.dev/rfc/" target="_blank" rel="noopener">RFC Tracker</a></li>
+        <li><a href="https://waf2p.dev/glossary/" target="_blank" rel="noopener">Glossary</a></li>
+        <li><a href="https://waf2p.dev/roles/" target="_blank" rel="noopener">Roles</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://github.com/waf2p/" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://join.slack.com/t/waf2p/shared_invite/zt-3rmu39vuf-nESwJheP4WAHxp15gEXgsA" target="_blank" rel="noopener">Slack Community</a></li>
+        <li><a href="https://waf2p.dev/feed.xml" target="_blank" rel="noopener">RSS</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-banner">
+      <a href="https://www.cloudnativeconference.de/" target="_blank" rel="noopener">
+        <img src="https://waf2p.dev/assets/images/cloud-native-conference.png" alt="Cloud Native Conference">
+      </a>
+    </div>
+
+    <div class="footer-legal">
+      <p>© 2026 WAF++ · <a href="https://adr-000.waf2p.dev" target="_blank" rel="noopener">ADR-000</a> · <a href="https://waf2p.dev/impressum/" target="_blank" rel="noopener">Imprint</a> · Powered by GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="nav.js"></script>
+</body>
+</html>

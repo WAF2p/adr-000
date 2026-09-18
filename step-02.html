@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WAF++ - ADR-000</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="step-page">
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="WAF++ logo">
+      <span>WAF++ · ADR-000</span>
+    </a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+      </svg>
+    </button>
+  </header>
+
+  <main class="journey-main">
+        <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step active" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
+      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
+      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
+      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
+      <a class="step" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
+      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
+      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+    </nav>
+
+    <section class="step-hero">
+      <p class="step-kicker">Step 2 of 10</p>
+      <h1>framework & framework-en</h1>
+      <p class="step-lead">
+        The heart of WAF++. It defines the 8 pillars, the machine-readable control catalogues, and all human-readable guidance. <code>framework</code> and <code>framework-en</code> are the same git repository checked out on two different branches.
+      </p>
+    </section>
+
+    <article class="content-grid">
+      <section class="card card-feature">
+        <h2>📚 What is the framework repository?</h2>
+        <p>The <code>framework</code> repository is the canonical source for the Well-Architected Framework++ itself. It contains:</p>
+        <ul class="pillar-list">
+          <li>The conceptual introduction, roadmap, and glossary.</li>
+          <li>One Antora module per pillar (Security, Cost, Performance Efficiency, Reliability, Operational Excellence, Sustainability, Sovereign, Agentic).</li>
+          <li>The machine-readable control definitions in YAML, consumed by <code>wafpass-core</code>.</li>
+          <li>Reviewer worksheets, decision guides, and architecture patterns.</li>
+        </ul>
+        <p>The content is written in AsciiDoc and published as an Antora documentation component. The website repo (<code>waf2p.github.io</code>) consumes this component together with its own marketing site.</p>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🗂️ Repository layout</h2>
+        <pre class="ascii-art">framework/                              # branch main-de
+├── antora.yml                          # Component descriptor
+├── modules/
+│   ├── ROOT/
+│   │   ├── pages/
+│   │   │   ├── index.adoc              # Framework landing page
+│   │   │   ├── roadmap.adoc
+│   │   │   └── resources.adoc
+│   │   └── nav.adoc                    # ROOT module navigation
+│   ├── pillar-security/
+│   │   ├── pages/
+│   │   │   ├── index.adoc              # Security pillar intro
+│   │   │   └── *.adoc                  # Best practices per topic
+│   │   └── nav.adoc
+│   ├── pillar-cost/
+│   │   ├── pages/
+│   │   └── nav.adoc
+│   ├── pillar-efficiancy/              # (spelling kept from upstream)
+│   │   ├── pages/
+│   │   └── nav.adoc
+│   ├── pillar-reliability/
+│   │   ├── pages/
+│   │   └── nav.adoc
+│   ├── pillar-excellence/
+│   │   ├── pages/
+│   │   └── nav.adoc
+│   ├── pillar-sustainability/
+│   │   ├── pages/
+│   │   └── nav.adoc
+│   ├── pillar-sovereign/
+│   │   ├── pages/
+│   │   └── nav.adoc
+│   ├── pillar-agentic/
+│   │   ├── pages/
+│   │   └── nav.adoc
+│   └── controls/
+│       ├── pages/
+│       │   └── index.adoc              # Controls catalog landing
+│       └── controls/
+│           ├── SEC-001-*.yml           # Security controls
+│           ├── COST-001-*.yml          # Cost controls
+│           ├── PERF-001-*.yml          # Performance controls
+│           ├── REL-001-*.yml           # Reliability controls
+│           ├── OPS-001-*.yml           # Operational Excellence controls
+│           ├── SUS-001-*.yml           # Sustainability controls
+│           ├── SOV-001-*.yml           # Sovereign controls
+│           └── AGT-001-*.yml           # Agentic controls
+├── supplemental_ui/                    # Custom Antora UI extensions
+├── AGENTS.md                           # Writing guidelines for contributors
+└── README.md
+        </pre>
+      </section>
+
+      <section class="card">
+        <h2>🌐 German vs English</h2>
+        <p>WAF++ ships in two languages. Both are maintained in the same repository, on separate long-lived branches:</p>
+        <ul>
+          <li><strong>German:</strong> <code>framework/</code> → branch <code>main-de</code>.</li>
+          <li><strong>English:</strong> <code>framework-en/</code> → branch <code>main-en</code>.</li>
+        </ul>
+        <p>The two directories are independent working copies of the same git history. You can merge translations, cherry-pick fixes, or release one language before the other.</p>
+      </section>
+
+      <section class="card">
+        <h2>⬇️ Clone commands</h2>
+        <pre class="terminal"><code>mkdir waf++
+cd waf++
+
+# German edition (branch main-de)
+git clone --single-branch --branch main-de \
+  https://github.com/WAF2p/framework.git framework
+
+# English edition (branch main-en) — same repo, different branch
+git clone --single-branch --branch main-en \
+  https://github.com/WAF2p/framework.git framework-en
+</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>✍️ AsciiDoc writing style & guidelines</h2>
+        <ul>
+          <li><strong>One idea per paragraph:</strong> keep guidance concise and actionable.</li>
+          <li><strong>Use cross-references:</strong> link to other pages with <code>xref:pillar-security:index.adoc[]</code> instead of hard-coding URLs.</li>
+          <li><strong>Include IDs:</strong> every section should have an anchor, e.g. <code>[#decision-matrix]</code>.</li>
+          <li><strong>Controls as code:</strong> control IDs, titles, and severities live in YAML under <code>modules/controls/controls/</code>; prose explanation lives in AsciiDoc.</li>
+          <li><strong>Language parity:</strong> when adding content to one language, open a corresponding issue/PR for the other branch.</li>
+          <li><strong>No Jekyll/Liquid:</strong> this repo is pure Antora/AsciiDoc; website styling comes from <code>waf2p.github.io</code>.</li>
+          <li><strong>Commits:</strong> conventional commits, e.g. <code>docs(pillar-security): add encryption decision guide</code>.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>🧪 Validate controls locally</h2>
+        <p>The engine reads the same YAML control files, so you can verify syntax and IDs without running a full site build.</p>
+        <pre class="terminal"><code># From the pass/ repo, after installing wafpass-core
+cd ../pass
+wafpass controls list ../framework/modules/controls/controls/
+
+# Or run a quick scan against dummy fixtures
+wafpass check ./dummy_code --controls-dir ../framework/modules/controls/controls/ --summary
+</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>🛠️ Build & preview workflow</h2>
+        <p>You do not build the framework repo on its own. The website repo runs Antora with this component as a source.</p>
+        <pre class="terminal"><code># 1. Clone the website repo alongside framework/
+git clone https://github.com/WAF2p/waf2p.github.io.git
+
+# 2. Install dependencies and start the local site
+cd waf2p.github.io
+npm install          # installs Antora CLI
+task deps:install    # installs Ruby/Jekyll deps if needed
+task site:serve      # builds Antora docs + Jekyll site
+</code></pre>
+        <p>The local playbook (<code>antora-playbook-local.yml</code>) points at the sibling <code>framework/</code> and <code>framework-en/</code> directories.</p>
+      </section>
+
+      <section class="card">
+        <h2>🚀 Framework developer onboarding</h2>
+        <ol class="checklist">
+          <li>Clone <code>framework</code> (main-de) and <code>framework-en</code> (main-en).</li>
+          <li>Read <code>AGENTS.md</code> and one full pillar module end-to-end.</li>
+          <li>Start the local site from <code>waf2p.github.io</code> and preview your edits.</li>
+          <li>Make a small docs fix: correct a typo, add an anchor, or improve a cross-reference.</li>
+          <li>If the change affects controls, validate the YAML against the engine.</li>
+          <li>Open a PR against the correct branch (<code>main-de</code> or <code>main-en</code>).</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2>🔗 Relationship to the website</h2>
+        <p><code>waf2p.github.io</code> is the public surface. It builds a Jekyll marketing site and then runs Antora to generate <code>/docs/wafpp/</code> from the <code>framework</code> and <code>framework-en</code> components. The website repo owns layouts, navigation, styling, and blog posts; the framework repos own the knowledge.</p>
+      </section>
+
+      <section class="card">
+        <h2>🗃️ Versioning and releases</h2>
+        <ul style="margin-bottom: 0;">
+          <li>The component version is declared in <code>antora.yml</code> (e.g. <code>1.0.2-de</code>, <code>1.0.2-en</code>).</li>
+          <li>Docs versions are kept in lockstep with control versions where possible.</li>
+          <li>Published URLs follow the pattern <code>https://waf2p.dev/docs/wafpp/{version}-{lang}/</code>.</li>
+          <li>Back-port critical fixes to the current published version branch; develop new content on <code>main-de</code> / <code>main-en</code>.</li>
+        </ul>
+      </section>
+    </article>
+
+    <nav class="step-nav" aria-label="Previous and next steps">
+      <a class="btn btn-secondary" href="step-01.html">← What is WAF++?</a>
+      <a class="btn btn-primary" href="step-03.html">Next: Repository Landscape →</a>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-compliance">
+      <span>GDPR</span>
+      <span>SOC 2</span>
+      <span>HIPAA</span>
+      <span>BSI C5</span>
+      <span>ISO 27001</span>
+      <span>NIS2</span>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <ul>
+        <li><a href="https://waf2p.dev/blog/" target="_blank" rel="noopener">Blog</a></li>
+        <li><a href="https://waf2p.dev/about/" target="_blank" rel="noopener">About</a></li>
+        <li><a href="https://waf2p.dev/vision/" target="_blank" rel="noopener">Vision</a></li>
+        <li><a href="https://waf2p.dev/faq/" target="_blank" rel="noopener">FAQ</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://waf2p.dev/docs/" target="_blank" rel="noopener">Documentation</a></li>
+        <li><a href="https://waf2p.dev/conferences/" target="_blank" rel="noopener">Conferences</a></li>
+        <li><a href="https://waf2p.dev/roadmap/" target="_blank" rel="noopener">Roadmap</a></li>
+        <li><a href="https://waf2p.dev/changelog/" target="_blank" rel="noopener">Changelog</a></li>
+        <li><a href="https://waf2p.dev/stay-updated/" target="_blank" rel="noopener">Stay Updated</a></li>
+        <li><a href="https://waf2p.dev/contributing/" target="_blank" rel="noopener">Contributing</a></li>
+        <li><a href="https://waf2p.dev/code-of-conduct/" target="_blank" rel="noopener">Code of Conduct</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://waf2p.dev/press/" target="_blank" rel="noopener">Press &amp; Media</a></li>
+        <li><a href="https://waf2p.dev/legal/" target="_blank" rel="noopener">Legal</a></li>
+        <li><a href="https://waf2p.dev/governance-community/" target="_blank" rel="noopener">Governance &amp; Community</a></li>
+        <li><a href="https://waf2p.dev/rfc/" target="_blank" rel="noopener">RFC Tracker</a></li>
+        <li><a href="https://waf2p.dev/glossary/" target="_blank" rel="noopener">Glossary</a></li>
+        <li><a href="https://waf2p.dev/roles/" target="_blank" rel="noopener">Roles</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://github.com/waf2p/" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://join.slack.com/t/waf2p/shared_invite/zt-3rmu39vuf-nESwJheP4WAHxp15gEXgsA" target="_blank" rel="noopener">Slack Community</a></li>
+        <li><a href="https://waf2p.dev/feed.xml" target="_blank" rel="noopener">RSS</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-banner">
+      <a href="https://www.cloudnativeconference.de/" target="_blank" rel="noopener">
+        <img src="https://waf2p.dev/assets/images/cloud-native-conference.png" alt="Cloud Native Conference">
+      </a>
+    </div>
+
+    <div class="footer-legal">
+      <p>© 2026 WAF++ · <a href="https://adr-000.waf2p.dev" target="_blank" rel="noopener">ADR-000</a> · <a href="https://waf2p.dev/impressum/" target="_blank" rel="noopener">Imprint</a> · Powered by GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="nav.js"></script>
+</body>
+</html>
