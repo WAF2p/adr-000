@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WAF++ · ADR-000 · The wafpass-result.json Contract</title>
+  <meta name="description" content="The wafpass-result.json schema is the central contract between the WAF++ engine, server, dashboard, integrations, and export formats.">
+  <meta name="keywords" content="WAF++, wafpass-result.json, contract, schema, result, integration, API">
+  <meta name="author" content="S. Lewandowski, A. Lajko, S. Meyer, T. Urlaub">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="WAF++ · ADR-000 · The wafpass-result.json Contract">
+  <meta property="og:description" content="Central result contract of the WAF++ ecosystem.">
+  <meta property="og:url" content="https://adr-000.waf2p.dev/step-06.html">
+  <meta property="og:site_name" content="WAF++ ADR-000">
+  <meta property="og:image" content="https://adr-000.waf2p.dev/logo.png">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WAF++ · ADR-000 · The wafpass-result.json Contract">
+  <meta name="twitter:description" content="Central result contract of the WAF++ ecosystem.">
+  <meta name="twitter:image" content="https://adr-000.waf2p.dev/logo.png">
+  <link rel="canonical" href="https://adr-000.waf2p.dev/step-06.html">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="step-page">
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="WAF++ logo">
+      <span>WAF++ · ADR-000</span>
+    </a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+      </svg>
+    </button>
+  </header>
+
+  <main class="journey-main">
+    <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step " href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step " href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step " href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step " href="step-04.html"><span class="step-num">4</span><span class="step-label">Map</span></a>
+      <a class="step " href="step-05.html"><span class="step-num">5</span><span class="step-label">Architecture</span></a>
+      <a class="step active" href="step-06.html"><span class="step-num">6</span><span class="step-label">Contract</span></a>
+      <a class="step " href="step-07.html"><span class="step-num">7</span><span class="step-label">Why?</span></a>
+      <a class="step " href="step-08.html"><span class="step-num">8</span><span class="step-label">Engine</span></a>
+      <a class="step " href="step-09.html"><span class="step-num">9</span><span class="step-label">Server</span></a>
+      <a class="step " href="step-10.html"><span class="step-num">10</span><span class="step-label">Dashboard</span></a>
+      <a class="step " href="step-11.html"><span class="step-num">11</span><span class="step-label">Integrations</span></a>
+      <a class="step " href="step-12.html"><span class="step-num">12</span><span class="step-label">Start</span></a>
+    </nav>
+
+    <section class="step-hero">
+      <p class="step-kicker">Step 6 of 12</p>
+      <h1>The wafpass-result.json Contract</h1>
+      <p class="step-lead">
+        Every integration in WAF++ speaks the same language: <code>wafpass-result.json</code>. It is the single source of truth between the engine, the server, the dashboard, AI assistants, CI pipelines, and export formats.
+      </p>
+    </section>
+
+    <article class="content-grid">
+      <section class="card card-feature">
+        <h2>🤝 Producer and consumer diagram</h2>
+        <p>The contract decouples producers from consumers. As long as a result file validates against the schema, any tool can read or write it without knowing the internals of the other repositories.</p>
+
+        <div class="contract-diagram">
+          <div class="contract-node">
+            <div class="contract-icon">⚙️</div>
+            <h4>wafpass-core</h4>
+            <p>Producer</p>
+          </div>
+          <div class="contract-node">
+            <div class="contract-icon">📝</div>
+            <h4>wafpass-result.json</h4>
+            <p>Central contract</p>
+          </div>
+          <div class="contract-node">
+            <div class="contract-icon">🗄️</div>
+            <h4>wafpass-server</h4>
+            <p>Consumer + store</p>
+          </div>
+          <div class="contract-node">
+            <div class="contract-icon">📊</div>
+            <h4>wafpass-dashboard</h4>
+            <p>Consumer</p>
+          </div>
+          <div class="contract-node">
+            <div class="contract-icon">🤖</div>
+            <h4>wafpass-mcp</h4>
+            <p>Consumer</p>
+          </div>
+          <div class="contract-node">
+            <div class="contract-icon">🔌</div>
+            <h4>wafpass-action</h4>
+            <p>Producer + consumer</p>
+          </div>
+          <div class="contract-node">
+            <div class="contract-icon">📄</div>
+            <h4>PDF / SARIF / Slack</h4>
+            <p>Export consumers</p>
+          </div>
+        </div>
+
+        <div class="repo-card">
+          <div>
+            <p>The canonical schema is defined in the engine repository.</p>
+            <span>wafpass-core/src/wafwafpass-core/models/result.py · wafpass-core/src/wafwafpass-core/schema.py</span>
+          </div>
+          <a class="repo-link" href="https://github.com/WAF2p/wafpass-core" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.419-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+            Open wafpass-core repo
+          </a>
+        </div>
+      </section>
+
+      <section class="card card-wide">
+        <h2>📄 Annotated wafpass-result.json example</h2>
+        <p>
+          The snippet below is a realistic, but not exhaustive, result file. Every key is followed by an inline explanation so you can read the file once and understand what each section is for. In real output the comments are not part of the JSON; they are shown here for teaching.
+        </p>
+
+        <pre class="terminal json-annotated"><code>{
+  // Schema contract version. Consumers reject files whose major version they do not understand.
+  "version": "1.0.0",
+
+  // Who produced this file, which engine build, and what inputs were scanned.
+  "generator": {
+    "name": "wafpass-core",
+    "version": "2.4.1",
+    "commit": "a1b2c3d"
+  },
+
+  // Everything that identifies this scan run.
+  "run": {
+    "id": "0192e6c4-0000-7000-8000-000000000001",  // Stable UUID used by /api/v1/runs/{id}
+    "project": "billing-service",                    // Logical project name in the server
+    "stage": "prod",                                 // Environment: local | staging | prod
+    "started_at": "2026-09-17T12:00:00Z",            // ISO-8601 UTC; drives sorting and reports
+    "duration_ms": 1240,                             // Total time from config load to report write
+    "iac_framework": "terraform",                    // terraform | cdk | pulumi | bicep
+    "working_dir": "modules/billing",                // Relative path that was scanned
+    "config": {                                      // Engine configuration used for this run
+      "control_filter": ["SEC-*", "OPS-*"],
+      "severity_threshold": "medium",
+      "include_passed": false
+    }
+  },
+
+  // Roll-up numbers every dashboard, badge, and CI gate reads first.
+  "summary": {
+    "total": 87,        // Controls evaluated (not the number of resources)
+    "passed": 72,       // Controls that met the requirement
+    "failed": 12,       // Controls that did not
+    "skipped": 3,       // Controls excluded by scope, waivers, or filters
+    "score": 82.8,      // 0-100 compliance score; optional, dashboard uses it for charts
+    "severities": {     // Drill-down used by the dashboard and Slack/Jira exporters
+      "critical": 1,
+      "high": 4,
+      "medium": 5,
+      "low": 2,
+      "info": 0
+    }
+  },
+
+  // One object per failed or skipped finding. Passed findings are optional.
+  "findings": [
+    {
+      "control_id": "SEC-001",                       // Matches the framework control ID exactly
+      "pillar": "Security",                            // Governance pillar (Security, Operations, ...)
+      "severity": "high",                              // critical | high | medium | low | info
+      "resource": "aws_s3_bucket.data",                // Terraform/CDK resource address
+      "resource_type": "aws_s3_bucket",                // Resource type for grouping and trend charts
+      "file": "infra/s3.tf",                           // Source file, relative to working_dir
+      "line": 42,                                      // Approximate line number for IDE links
+      "column": 5,
+      "message": "S3 bucket is missing server-side encryption configuration.",
+      "remediation": "Add aws_s3_bucket_server_side_encryption_configuration ...",
+      "references": [                                  // Links to framework docs and external guidance
+        "https://adr-000.waf2p.dev/controls/SEC-001",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html"
+      ],
+      "waived": false,                                 // True if a waiver was applied
+      "evidence": {                                    // Optional: snippets, hashes, or snapshots
+        "code_snippet": "resource \"aws_s3_bucket\" \"data\" { ... }",
+        "fingerprint": "sha256:..."
+      }
+    }
+  ],
+
+  // Optional: waivers, risks, and metadata that the server stores as JSONB.
+  "waivers": [],
+  "risks": [],
+  "metadata": {
+    "ci_run_url": "https://github.com/WAF2p/billing/actions/runs/12345",
+    "git": {
+      "branch": "main",
+      "commit": "deadbeef",
+      "dirty": false
+    }
+  }
+}
+</code></pre>
+
+        <div class="json-annotation-grid">
+          <div class="json-annotation-card">
+            <h4>Top-level envelope</h4>
+            <p><code>version</code>, <code>generator</code>, <code>run</code>, and <code>summary</code> are always present. They let consumers decide whether they can parse the file and how urgent it is.</p>
+          </div>
+          <div class="json-annotation-card">
+            <h4>Run identity</h4>
+            <p><code>run.id</code> becomes the primary key on the server. <code>run.project</code> + <code>run.stage</code> group runs in dashboards and passports.</p>
+          </div>
+          <div class="json-annotation-card">
+            <h4>Summary math</h4>
+            <p><code>total = passed + failed + skipped</code>. Severities are independent: one control failure may or may not have a severity depending on the control.</p>
+          </div>
+          <div class="json-annotation-card">
+            <h4>Findings are the payload</h4>
+            <p>Each finding is self-contained: a control, a resource, a location, a message, and optionally remediation links and evidence. This is what PDF/SARIF/Slack exporters render.</p>
+          </div>
+          <div class="json-annotation-card">
+            <h4>Optional sections</h4>
+            <p><code>waivers</code>, <code>risks</code>, and <code>metadata</code> are not required for a valid result, but they make the file richer for audits, evidence packages, and CI links.</p>
+          </div>
+          <div class="json-annotation-card">
+            <h4>Security note</h4>
+            <p>No secrets, state files, or raw plan output ever belong in this file. Only resource addresses, code snippets, and findings. Sensitive data goes to the secure evidence store.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🧩 Field reference</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Field</th><th>Type</th><th>Required</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>version</code></td><td>string (semver)</td><td>yes</td><td>Schema version; consumers check this before parsing deeper fields.</td></tr>
+              <tr><td><code>generator.name</code></td><td>string</td><td>yes</td><td>Tool that produced the file, e.g. <code>wafpass-core</code>.</td></tr>
+              <tr><td><code>generator.version</code></td><td>string (semver)</td><td>yes</td><td>Engine version for reproducibility and bug triage.</td></tr>
+              <tr><td><code>generator.commit</code></td><td>string</td><td>no</td><td>Git commit hash the engine was built from.</td></tr>
+              <tr><td><code>run.id</code></td><td>string (UUID)</td><td>yes</td><td>Unique identifier for this scan run; becomes <code>/api/v1/runs/{id}</code>.</td></tr>
+              <tr><td><code>run.project</code></td><td>string</td><td>yes</td><td>Logical project or service name.</td></tr>
+              <tr><td><code>run.stage</code></td><td>string</td><td>yes</td><td>Environment or stage, e.g. <code>local</code>, <code>staging</code>, <code>prod</code>.</td></tr>
+              <tr><td><code>run.started_at</code></td><td>string (ISO 8601)</td><td>yes</td><td>UTC timestamp when the scan started; used for sorting and passports.</td></tr>
+              <tr><td><code>run.duration_ms</code></td><td>integer</td><td>yes</td><td>Total scan duration in milliseconds.</td></tr>
+              <tr><td><code>run.iac_framework</code></td><td>string</td><td>yes</td><td>Framework that was scanned: <code>terraform</code>, <code>cdk</code>, <code>pulumi</code>, <code>bicep</code>.</td></tr>
+              <tr><td><code>run.working_dir</code></td><td>string</td><td>no</td><td>Relative path that was scanned; makes <code>file</code> values interpretable.</td></tr>
+              <tr><td><code>run.config</code></td><td>object</td><td>no</td><td>Engine configuration used: filters, thresholds, inclusions.</td></tr>
+              <tr><td><code>summary.total</code></td><td>integer</td><td>yes</td><td>Total controls evaluated.</td></tr>
+              <tr><td><code>summary.passed</code></td><td>integer</td><td>yes</td><td>Controls that passed.</td></tr>
+              <tr><td><code>summary.failed</code></td><td>integer</td><td>yes</td><td>Controls that failed.</td></tr>
+              <tr><td><code>summary.skipped</code></td><td>integer</td><td>yes</td><td>Controls skipped because of missing scope or waivers.</td></tr>
+              <tr><td><code>summary.score</code></td><td>number</td><td>no</td><td>Compliance score, 0–100.</td></tr>
+              <tr><td><code>summary.severities</code></td><td>object</td><td>no</td><td>Distribution of failed finding severities for dashboards/exporters.</td></tr>
+              <tr><td><code>findings[]</code></td><td>array</td><td>yes</td><td>One object per failed/skipped finding.</td></tr>
+              <tr><td><code>findings[].control_id</code></td><td>string</td><td>yes</td><td>ID of the control that produced the finding.</td></tr>
+              <tr><td><code>findings[].pillar</code></td><td>string</td><td>yes</td><td>Governance pillar the control belongs to.</td></tr>
+              <tr><td><code>findings[].severity</code></td><td>string</td><td>yes</td><td><code>critical</code>, <code>high</code>, <code>medium</code>, <code>low</code>, or <code>info</code>.</td></tr>
+              <tr><td><code>findings[].resource</code></td><td>string</td><td>no</td><td>Resource address that triggered the finding.</td></tr>
+              <tr><td><code>findings[].resource_type</code></td><td>string</td><td>no</td><td>Resource type for grouping and trend charts.</td></tr>
+              <tr><td><code>findings[].file</code></td><td>string</td><td>no</td><td>Source file path, relative to <code>run.working_dir</code>.</td></tr>
+              <tr><td><code>findings[].line</code></td><td>integer</td><td>no</td><td>Approximate line number for IDE links.</td></tr>
+              <tr><td><code>findings[].message</code></td><td>string</td><td>yes</td><td>Human-readable description of the problem.</td></tr>
+              <tr><td><code>findings[].remediation</code></td><td>string</td><td>no</td><td>Suggested fix or reference.</td></tr>
+              <tr><td><code>findings[].references</code></td><td>array of strings</td><td>no</td><td>Framework docs and external guidance URLs.</td></tr>
+              <tr><td><code>findings[].waived</code></td><td>boolean</td><td>no</td><td>True if a waiver was applied to this finding.</td></tr>
+              <tr><td><code>findings[].evidence</code></td><td>object</td><td>no</td><td>Tamper-evident snippet or fingerprint (no secrets).</td></tr>
+              <tr><td><code>waivers[]</code></td><td>array</td><td>no</td><td>Waivers that influenced skipped/passed findings.</td></tr>
+              <tr><td><code>risks[]</code></td><td>array</td><td>no</td><td>Risk acceptances attached to this run.</td></tr>
+              <tr><td><code>metadata</code></td><td>object</td><td>no</td><td>CI links, Git branch/commit, or custom tags.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>🎯 Why one central result file?</h2>
+        <ul>
+          <li><strong>Decoupling:</strong> The dashboard does not need to know how Terraform is parsed.</li>
+          <li><strong>Reproducibility:</strong> Save a result and re-run the same report months later.</li>
+          <li><strong>Auditability:</strong> Immutable evidence packages are built from result JSON.</li>
+          <li><strong>Testability:</strong> Fixtures are plain JSON; every consumer can have contract tests.</li>
+          <li><strong>Portability:</strong> Move a scan from CI to server to dashboard without re-running it.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>🔢 Versioning rules</h2>
+        <ul>
+          <li><strong>Major bump</strong> when required fields change or a field is removed.</li>
+          <li><strong>Minor bump</strong> when new optional fields are added.</li>
+          <li><strong>Patch bump</strong> for documentation or formatting changes only.</li>
+          <li>Consumers must <strong>reject unknown major versions</strong> and warn on unknown minors.</li>
+          <li>The engine, server, and dashboard release notes always mention schema version changes.</li>
+        </ul>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🛠️ Validating and working with results</h2>
+        <pre class="terminal"><code># Validate a result against the schema
+wafpass validate wafpass-result.json
+
+# Push to the server
+wafpass push wafpass-result.json --server http://localhost:8000/api/v1
+
+# Convert to SARIF for other tools
+wafpass report --input wafpass-result.json --format sarif
+
+# Server stores the raw JSONB and exposes it at /api/v1/runs/{id}
+curl http://localhost:8000/api/v1/runs/0192e6c4-... \
+  -H "Authorization: Bearer $WAFPASS_API_KEY"
+</code></pre>
+      </section>
+    </article>
+    <nav class="step-nav" aria-label="Previous and next steps">
+      <a class="btn btn-secondary" href="step-05.html">← High-Level Architecture</a>
+      <a class="btn btn-primary" href="step-07.html">Next: Why Multiservice? →</a>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-compliance">
+      <span>GDPR</span>
+      <span>SOC 2</span>
+      <span>HIPAA</span>
+      <span>BSI C5</span>
+      <span>ISO 27001</span>
+      <span>NIS2</span>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <ul>
+        <li><a href="https://waf2p.dev/blog/" target="_blank" rel="noopener">Blog</a></li>
+        <li><a href="https://waf2p.dev/about/" target="_blank" rel="noopener">About</a></li>
+        <li><a href="https://waf2p.dev/vision/" target="_blank" rel="noopener">Vision</a></li>
+        <li><a href="https://waf2p.dev/faq/" target="_blank" rel="noopener">FAQ</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://waf2p.dev/docs/" target="_blank" rel="noopener">Documentation</a></li>
+        <li><a href="https://waf2p.dev/conferences/" target="_blank" rel="noopener">Conferences</a></li>
+        <li><a href="https://waf2p.dev/roadmap/" target="_blank" rel="noopener">Roadmap</a></li>
+        <li><a href="https://waf2p.dev/changelog/" target="_blank" rel="noopener">Changelog</a></li>
+        <li><a href="https://waf2p.dev/stay-updated/" target="_blank" rel="noopener">Stay Updated</a></li>
+        <li><a href="https://waf2p.dev/contributing/" target="_blank" rel="noopener">Contributing</a></li>
+        <li><a href="https://waf2p.dev/code-of-conduct/" target="_blank" rel="noopener">Code of Conduct</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://waf2p.dev/press/" target="_blank" rel="noopener">Press &amp; Media</a></li>
+        <li><a href="https://waf2p.dev/legal/" target="_blank" rel="noopener">Legal</a></li>
+        <li><a href="https://waf2p.dev/governance-community/" target="_blank" rel="noopener">Governance &amp; Community</a></li>
+        <li><a href="https://waf2p.dev/rfc/" target="_blank" rel="noopener">RFC Tracker</a></li>
+        <li><a href="https://waf2p.dev/glossary/" target="_blank" rel="noopener">Glossary</a></li>
+        <li><a href="https://waf2p.dev/roles/" target="_blank" rel="noopener">Roles</a></li>
+      </ul>
+      <ul>
+        <li><a href="https://github.com/waf2p/" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://join.slack.com/t/waf2p/shared_invite/zt-3rmu39vuf-nESwJheP4WAHxp15gEXgsA" target="_blank" rel="noopener">Slack Community</a></li>
+        <li><a href="https://waf2p.dev/feed.xml" target="_blank" rel="noopener">RSS</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-banner">
+      <a href="https://www.cloudnativeconference.de/" target="_blank" rel="noopener">
+        <img src="https://waf2p.dev/assets/images/cloud-native-conference.png" alt="Cloud Native Conference">
+      </a>
+    </div>
+
+    <div class="footer-legal">
+      <p>© 2026 WAF++ · <a href="https://adr-000.waf2p.dev" target="_blank" rel="noopener">ADR-000</a> · <a href="https://waf2p.dev/impressum/" target="_blank" rel="noopener">Imprint</a> · Powered by GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="nav.js"></script>
+</body>
+</html>
