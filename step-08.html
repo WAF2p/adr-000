@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAF++ · ADR-000 · wafpass-dashboard</title>
-  <meta name="description" content="Developer guide to wafpass-dashboard: React SPA architecture, visualisation patterns, API consumption, and frontend conventions.">
-  <meta name="keywords" content="WAF++, wafpass-dashboard, React, SPA, dashboard, compliance posture, TypeScript, frontend">
+  <title>WAF++ · ADR-000 · wafpass-core Engine</title>
+  <meta name="description" content="Developer guide to wafpass-core: the IaC compliance engine, CLI, result schema, parsers, controls, and onboarding workflow.">
+  <meta name="keywords" content="WAF++, wafpass-core, engine, IaC, Terraform, Bicep, CDK, Pulumi, wafpass-result.json, Python">
   <meta name="author" content="S. Lewandowski, A. Lajko, S. Meyer, T. Urlaub">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="WAF++ · ADR-000 · wafpass-dashboard">
-  <meta property="og:description" content="Developer guide to wafpass-dashboard: React SPA for compliance visualisation.">
+  <meta property="og:title" content="WAF++ · ADR-000 · wafpass-core Engine">
+  <meta property="og:description" content="Developer guide to wafpass-core: the IaC compliance engine.">
   <meta property="og:url" content="https://adr-000.waf2p.dev/step-08.html">
   <meta property="og:site_name" content="WAF++ ADR-000">
   <meta property="og:image" content="https://adr-000.waf2p.dev/logo.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="WAF++ · ADR-000 · wafpass-dashboard">
-  <meta name="twitter:description" content="Developer guide to the WAF++ dashboard.">
+  <meta name="twitter:title" content="WAF++ · ADR-000 · wafpass-core Engine">
+  <meta name="twitter:description" content="Developer guide to the WAF++ compliance engine.">
   <meta name="twitter:image" content="https://adr-000.waf2p.dev/logo.png">
   <link rel="canonical" href="https://adr-000.waf2p.dev/step-08.html">
   <link rel="icon" type="image/png" href="logo.png">
@@ -37,152 +37,186 @@
   </header>
 
   <main class="journey-main">
-        <nav class="progress-stepper" aria-label="Onboarding steps">
-      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
-      <a class="step" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
-      <a class="step" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
-      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
-      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
-      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
-      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
-      <a class="step active" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
-      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
-      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+    <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step " href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step " href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step " href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step " href="step-04.html"><span class="step-num">4</span><span class="step-label">Map</span></a>
+      <a class="step " href="step-05.html"><span class="step-num">5</span><span class="step-label">Architecture</span></a>
+      <a class="step " href="step-06.html"><span class="step-num">6</span><span class="step-label">Contract</span></a>
+      <a class="step " href="step-07.html"><span class="step-num">7</span><span class="step-label">Why?</span></a>
+      <a class="step active" href="step-08.html"><span class="step-num">8</span><span class="step-label">Engine</span></a>
+      <a class="step " href="step-09.html"><span class="step-num">9</span><span class="step-label">Server</span></a>
+      <a class="step " href="step-10.html"><span class="step-num">10</span><span class="step-label">Dashboard</span></a>
+      <a class="step " href="step-11.html"><span class="step-num">11</span><span class="step-label">Integrations</span></a>
+      <a class="step " href="step-12.html"><span class="step-num">12</span><span class="step-label">Start</span></a>
     </nav>
 
     <section class="step-hero">
-      <p class="step-kicker">Step 8 of 10</p>
-      <h1>wafpass-dashboard</h1>
+      <p class="step-kicker">Step 8 of 12</p>
+      <h1>wafpass-core</h1>
       <p class="step-lead">
-        The browser-based cockpit. It visualises scan history, drill-down findings, trends, and compliance posture for teams and auditors.
+        The IaC compliance engine. It scans Terraform, Bicep, CDK, and Pulumi code, evaluates controls, and emits the canonical <code>wafpass-result.json</code> for the server and dashboard.
       </p>
     </section>
 
     <article class="content-grid">
       <section class="card card-wide">
-        <h2>🧰 Technology stack & patterns</h2>
+        <h2>🧰 Technology stack &amp; patterns</h2>
         <div class="feature-grid">
           <div class="feature-card">
-            <h4>React 18+</h4>
-            <p>Functional components and hooks. Keep components small and compose through props, not inheritance.</p>
+            <h4>Python 3.11+</h4>
+            <p>Modern Python with type hints, <code>pathlib</code>, and <code>asyncio</code> for parallel rule evaluation.</p>
           </div>
           <div class="feature-card">
-            <h4>TypeScript</h4>
-            <p>Strict mode enabled. Define shared types in <code>src/types/</code> and derive API shapes from the backend OpenAPI spec.</p>
+            <h4>CLI</h4>
+            <p>Composable command-line interface built on Typer/Click, with nested groups and generated help text.</p>
           </div>
           <div class="feature-card">
-            <h4>Vite</h4>
-            <p>Fast dev server and production builds. Environment variables use <code>VITE_*</code> prefix.</p>
+            <h4>Pydantic v2</h4>
+            <p>Models for controls, findings, and the result schema; strict validation and serialisation.</p>
           </div>
           <div class="feature-card">
-            <h4>Tailwind CSS</h4>
-            <p>Utility-first styling. Custom design tokens live in <code>tailwind.config.js</code>.</p>
+            <h4>Pluggy</h4>
+            <p>Hook-based plugin system so controls and IaC parsers live in separate packages.</p>
           </div>
           <div class="feature-card">
-            <h4>TanStack Query</h4>
-            <p>Server-state cache, loading/error UI, background refetching, and optimistic updates.</p>
+            <h4>Jinja2</h4>
+            <p>Human-readable finding messages and report templates that can be localised.</p>
           </div>
           <div class="feature-card">
-            <h4>Recharts / Chart.js</h4>
-            <p>Trend charts, radar diagrams, and pie charts for pillar distribution and severity.</p>
+            <h4>Rich / structlog</h4>
+            <p>Coloured terminal output and structured JSON logs for CI environments.</p>
           </div>
         </div>
       </section>
 
       <section class="card card-wide">
+        <div class="repo-card">
+          <div>
+            <p>Engine, CLI, result schema, and bundled controls.</p>
+            <span>https://github.com/WAF2p/wafpass-core</span>
+          </div>
+          <a class="repo-link" href="https://github.com/WAF2p/wafpass-core" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.419-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+            Open wafpass-core repo
+          </a>
+        </div>
+      </section>
+
+      <section class="card card-wide">
         <h2>🗂️ Repository layout</h2>
-        <pre class="ascii-art">wafpass-dashboard/
-├── public/
-├── src/
-│   ├── main.tsx              # React root, Vite entry
-│   ├── App.tsx               # Router shell and layout
-│   ├── routes/               # Page-level route components
-│   │   ├── Dashboard.tsx
-│   │   ├── RunDetail.tsx
-│   │   ├── ProjectList.tsx
-│   │   └── Settings.tsx
-│   ├── components/           # Reusable UI blocks
-│   │   ├── ui/               # Buttons, cards, inputs, badges
-│   │   ├── charts/           # Recharts wrappers
-│   │   └── findings/         # Finding cards, filters, tables
-│   ├── hooks/                # Custom hooks (useRuns, useProjects)
-│   ├── api/                  # Axios/fetch client and generated types
-│   ├── types/                # Shared TypeScript types
-│   ├── stores/               # Zustand or Context state slices
-│   ├── lib/                  # Utilities (dates, formatters, theme)
-│   └── styles/               # Global CSS and Tailwind directives
+        <pre class="ascii-art">wafpass-core/                        # wafpass-core
+├── src/wafwafpass-core/
+│   ├── __init__.py
+│   ├── cli.py               # CLI entrypoint: wafpass check, wafpass validate, wafpass push
+│   ├── config.py            # Pydantic settings, controls path, default thresholds
+│   ├── scanner.py           # Orchestrates parser → control evaluator → report
+│   ├── parsers/             # One parser per IaC framework
+│   │   ├── __init__.py
+│   │   ├── terraform.py     # HCL2 / plan.json support
+│   │   ├── bicep.py         # Bicep JSON / ARM decompilation
+│   │   ├── cdk.py           # CDK metadata and CloudFormation output
+│   │   └── pulumi.py        # Pulumi resource graphs
+│   ├── controls/            # Control registry and rule engine
+│   │   ├── registry.py      # Loads YAML control definitions
+│   │   ├── evaluator.py     # Runs checks against parsed resources
+│   │   └── severity.py      # Maps findings to severity buckets
+│   ├── models/              # Pydantic result and finding models
+│   │   ├── result.py        # wafpass-result.json contract
+│   │   └── finding.py
+│   ├── plugins/             # Third-party parser/control plugins via pluggy
+│   ├── reporters/           # JSON, SARIF, HTML, markdown exporters
+│   └── push.py              # POST result to wafpass-server /api/v1/runs
 ├── tests/
-│   ├── unit/                 # Vitest + React Testing Library
-│   └── e2e/                  # Playwright smoke tests
-├── index.html
-├── package.json
-├── tailwind.config.js
-├── tsconfig.json
-└── vite.config.ts
+│   ├── conftest.py          # Shared fixtures: sample IaC, temp dirs, mocked server
+│   ├── parsers/             # Parser unit tests per framework
+│   ├── controls/            # Rule behaviour and severity tests
+│   └── fixtures/            # Sample Terraform/Bicep/CDK/Pulumi files
+├── controls/                # YAML control definitions (data, not code)
+├── pyproject.toml
+├── README.md
+└── Dockerfile
         </pre>
       </section>
 
       <section class="card">
-        <h2>🖥️ Run the dashboard locally</h2>
-        <pre class="terminal"><code>cd wafpass-dashboard
-npm install
+        <h2>🖥️ Run the engine locally</h2>
+        <pre class="terminal"><code># Install in editable mode
+mkdir waf++ &amp;&amp; cd waf++
+git clone https://github.com/WAF2p/wafpass-core.git
+cd wafpass-core
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
 
-# Point to a local server (or mock proxy)
-echo "VITE_API_URL=http://localhost:8000/api/v1" > .env.local
+# Verify the CLI
+wafpass --help
+wafpass version
 
-npm run dev
-# open http://localhost:5173
+# Scan a sample
+wafpass check ./tests/fixtures/terraform --output json \
+  --project demo --stage local
 
-# Storybook (if configured)
-npm run storybook
-
-# Production build
-npm run build
-npm run preview
+# Push to a local server
+wafpass check ./tests/fixtures/terraform \
+  --push http://localhost:8000/api/v1/runs \
+  --api-key $WAFPASS_API_KEY
 </code></pre>
       </section>
 
       <section class="card">
-        <h2>🎨 Code style & guidelines</h2>
+        <h2>🎨 Code style &amp; guidelines</h2>
         <ul>
-          <li><strong>Formatter:</strong> <code>prettier</code> with project config; run <code>npm run format</code>.</li>
-          <li><strong>Linter:</strong> <code>eslint</code> with TypeScript and React hooks rules; zero warnings in CI.</li>
-          <li><strong>Components:</strong> one component per file; co-locate styles if they are component-specific.</li>
-          <li><strong>Hooks:</strong> extract data-fetching and side effects into custom hooks; keep UI hooks lean.</li>
-          <li><strong>Types:</strong> no <code>any</code> without justification; prefer interfaces for props and types for unions/derived shapes.</li>
-          <li><strong>Accessibility:</strong> semantic HTML, ARIA labels, keyboard focus states, and colour-contrast checks.</li>
-          <li><strong>Performance:</strong> memoise expensive renders and chart data; lazy-load route components.</li>
-          <li><strong>Commits:</strong> conventional commits, e.g. <code>feat(dashboard): add severity filter</code>.</li>
+          <li><strong>Formatter:</strong> <code>ruff format</code> with line length 100.</li>
+          <li><strong>Linter:</strong> <code>ruff check</code> for imports, complexity, and style.</li>
+          <li><strong>Typing:</strong> annotate public APIs; run <code>mypy --strict</code> in CI.</li>
+          <li><strong>Async:</strong> parser discovery and control evaluation run concurrently via <code>asyncio.gather</code>.</li>
+          <li><strong>Immutability:</strong> wafpass-core result models as Pydantic objects; avoid mutating raw dicts.</li>
+          <li><strong>Controls as data:</strong> control definitions live in YAML; engine code only interprets them.</li>
+          <li><strong>Plugins:</strong> expose hook specs in <code>wafpass.hookspecs</code>; implement via entry points.</li>
+          <li><strong>Errors:</strong> raise <code>WafPassError</code> with a stable error code; CLI catches and exits with a documented status.</li>
         </ul>
         <pre class="terminal"><code># Local quality gates
-npm run lint
-npm run format:check
-npm run typecheck
-npm run test
+ruff check src tests
+ruff format --check src tests
+mypy src
+pytest
 </code></pre>
       </section>
 
       <section class="card card-wide">
-        <h2>🎨 Design system & glass-morphism</h2>
-        <p>The dashboard shares the same visual language as <a href="https://waf2p.dev" target="_blank" rel="noopener">waf2p.dev</a>: soft gradients, translucent cards, subtle borders, and theme-aware colour tokens.</p>
-        <ul>
-          <li>Use CSS variables for light/dark palettes; do not hard-code colours.</li>
-          <li>Cards use a semi-transparent background with backdrop blur for the glass effect.</li>
-          <li>Accent colour is the WAF++ blue (#0094FF); severity colours are red/amber/green/neutral.</li>
-          <li>The theme toggle sets <code>data-theme</code> on the document root and persists the choice.</li>
-          <li>Mobile-first grids: 1 column on phone, 2 on tablet, 3+ on desktop.</li>
-        </ul>
-        <pre class="terminal"><code>/* Example glass card (Tailwind + custom CSS) */
-.glass-card {
-  @apply rounded-2xl border p-6;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(12px);
-  border-color: rgba(15, 23, 42, 0.09);
-}
-
-[data-theme="dark"] .glass-card {
-  background: rgba(15, 23, 42, 0.60);
-  border-color: rgba(148, 163, 184, 0.14);
+        <h2>📄 The result contract: wafpass-result.json</h2>
+        <p>The engine's only output that downstream components consume. It is versioned, self-describing, and contains no raw credentials.</p>
+        <pre class="terminal"><code>{
+  "version": "1.0.0",
+  "run": {
+    "id": "0192e6c4-...",
+    "project": "my-service",
+    "stage": "prod",
+    "started_at": "2026-09-17T12:00:00Z",
+    "duration_ms": 1240,
+    "iac_framework": "terraform"
+  },
+  "summary": {
+    "total": 87,
+    "passed": 72,
+    "failed": 12,
+    "skipped": 3,
+    "score": 82.8
+  },
+  "findings": [
+    {
+      "control_id": "SEC-001",
+      "pillar": "Security",
+      "severity": "high",
+      "resource": "aws_s3_bucket.data",
+      "message": "S3 bucket is missing server-side encryption configuration.",
+      "remediation": "Enable aws_s3_bucket_server_side_encryption_configuration ..."
+    }
+  ]
 }
 </code></pre>
       </section>
@@ -190,79 +224,85 @@ npm run test
       <section class="card card-wide">
         <h2>🧪 Testing strategy</h2>
         <ol>
-          <li><strong>Unit tests:</strong> Vitest + React Testing Library for components, hooks, and utilities.</li>
-          <li><strong>Mocked API:</strong> MSW (Mock Service Worker) intercepts calls during tests and Storybook.</li>
-          <li><strong>Visual regression:</strong> Storybook stories for every reusable component.</li>
-          <li><strong>E2E:</strong> Playwright runs login, upload, navigation, and export flows against a real backend.</li>
-          <li><strong>Accessibility:</strong> axe-core in CI catches missing labels and contrast issues.</li>
+          <li><strong>Parser tests:</strong> feed real IaC fixtures and assert the resource graph is extracted correctly.</li>
+          <li><strong>Control tests:</strong> parametrised tests for each control against passing and failing fixtures.</li>
+          <li><strong>Schema tests:</strong> every generated result validates against the Pydantic model.</li>
+          <li><strong>CLI tests:</strong> use <code>click.testing.CliRunner</code> to exercise commands and exit codes.</li>
+          <li><strong>Integration tests:</strong> run <code>wafpass check</code> end-to-end and push to a test server instance.</li>
         </ol>
-        <pre class="terminal"><code># Watch mode during development
-npm run test -- --watch
+        <pre class="terminal"><code># tests/controls/test_sec_001.py example
+import pytest
+from wafpass.evaluator import evaluate
+from wafpass.parsers.terraform import parse
 
-# Run a single test file
-npx vitest run src/components/charts/PillarChart.test.tsx
-
-# E2E
-npx playwright test
+@pytest.mark.parametrize("fixture,expected", [
+    ("s3_encrypted.wafpass-core.tf", []),
+    ("s3_plain.fail.tf", ["SEC-001"]),
+])
+def test_s3_encryption(fixture, expected):
+    resources = parse(f"tests/fixtures/terraform/{fixture}")
+    findings = evaluate(resources)
+    assert [f.control_id for f in findings] == expected
 </code></pre>
       </section>
 
       <section class="card card-wide">
-        <h2>🔌 API integration</h2>
-        <p>The dashboard consumes <code>wafpass-server</code> REST endpoints. All server-state lives in TanStack Query; local UI state lives in Zustand or React Context. Generated types from the OpenAPI spec are kept in <code>src/api/openapi.ts</code> and refreshed when the backend contract changes.</p>
-        <pre class="terminal"><code>// src/hooks/useRuns.ts example
-import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/api/client';
-
-export function useRuns(projectId: string) {
-  return useQuery({
-    queryKey: ['runs', projectId],
-    queryFn: () => apiClient.get(`/projects/${projectId}/runs`).then(r => r.data),
-  });
-}
-</code></pre>
+        <h2>⚙️ Key CLI commands</h2>
+        <table>
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>wafpass check PATH</code></td><td>Scan IaC and print or export findings</td></tr>
+            <tr><td><code>wafpass validate FILE</code></td><td>Validate a wafpass-result.json against the schema</td></tr>
+            <tr><td><code>wafpass push FILE --server URL</code></td><td>Push an existing result to the server</td></tr>
+            <tr><td><code>wafpass controls list</code></td><td>List loaded controls and their pillars</td></tr>
+            <tr><td><code>wafpass plugins list</code></td><td>Show installed parser and reporter plugins</td></tr>
+            <tr><td><code>wafpass report --format sarif</code></td><td>Convert a result into SARIF/HTML/markdown</td></tr>
+          </tbody>
+        </table>
       </section>
 
       <section class="card">
         <h2>🚀 Developer onboarding flow</h2>
         <ol class="checklist">
-          <li>Clone <code>wafpass-dashboard</code> and install dependencies.</li>
-          <li>Start <code>wafpass-server</code> locally (or use MSW mocks) and set <code>VITE_API_URL</code>.</li>
-          <li>Explore <code>src/routes/Dashboard.tsx</code> and <code>src/components/charts/</code>.</li>
-          <li>Add a small UI component with a Storybook story and a unit test.</li>
-          <li>Run lint, typecheck, and tests before opening a PR.</li>
+          <li>Clone <code>wafpass-core</code>, create a venv, and run <code>pip install -e ".[dev]"</code>.</li>
+          <li>Run <code>wafpass check ./tests/fixtures/terraform --summary</code> to see the engine work.</li>
+          <li>Read <code>src/wafwafpass-core/scanner.py</code> and <code>src/wafwafpass-core/models/result.py</code> for the scan pipeline.</li>
+          <li>Pick a control in <code>controls/</code>; add a failing and passing fixture, then run <code>pytest</code>.</li>
+          <li>Open a PR with tests and a changelog entry; CI runs the full matrix across Python 3.11–3.13.</li>
         </ol>
-        <pre class="terminal"><code>cd wafpass-dashboard
-npm install
-echo "VITE_API_URL=http://localhost:8000/api/v1" > .env.local
-npm run dev
+        <pre class="terminal"><code>cd wafpass-core
+pytest -x
+wafpass check ./tests/fixtures/bicep --output json | jq '.summary'
 </code></pre>
       </section>
 
       <section class="card card-wide">
-        <h2>🗃️ State management rules</h2>
+        <h2>⚙️ Configuration</h2>
+        <p>All behaviour is configurable via environment variables or a <code>pyproject.toml</code> <code>[tool.wafpass]</code> table:</p>
         <ul style="margin-bottom: 0;">
-          <li><strong>Server state:</strong> TanStack Query only. Do not mirror server data in a global store.</li>
-          <li><strong>Local state:</strong> <code>useState</code> for component-local UI (filters, toggles).</li>
-          <li><strong>Shared UI state:</strong> Zustand for theme, sidebar, notifications, and active project.</li>
-          <li><strong>Derived data:</strong> compute charts and aggregates in memoised selectors, not in render body.</li>
+          <li><code>WAFPASS_CONTROLS_PATH</code> — directory of YAML control definitions.</li>
+          <li><code>WAFPASS_MAX_WORKERS</code> — concurrent parser/evaluator workers.</li>
+          <li><code>WAFPASS_RESULT_MAX_SIZE_MB</code> — hard cap on emitted result JSON.</li>
+          <li><code>WAFPASS_DEFAULT_SEVERITY</code> — fail threshold for CLI exit code.</li>
+          <li><code>WAFPASS_LOG_FORMAT</code> — <code>text</code> or <code>json</code> logging.</li>
         </ul>
       </section>
 
       <section class="card card-wide">
-        <h2>🔒 Security & trust assumptions</h2>
+        <h2>🔒 Security &amp; trust assumptions</h2>
         <ul style="margin-bottom: 0;">
-          <li>Never store API keys in frontend code or environment files that ship to the browser.</li>
-          <li>The dashboard relies on the server's auth layer; route guards redirect unauthenticated users.</li>
-          <li>Sanitise any user-generated content rendered as HTML to avoid XSS.</li>
-          <li>Keep charting libraries updated; they handle SVG/DOM and can introduce DOM-based XSS if compromised.</li>
+          <li>The engine never executes IaC; it only reads and parses source or plan files.</li>
+          <li>Plan files may contain sensitive values; sanitise them before sharing results.</li>
+          <li>Keep the API key out of logs and shell history; prefer CI secret stores.</li>
+          <li>Parser plugins run in-process; install only trusted plugins from known sources.</li>
         </ul>
       </section>
     </article>
-
     <nav class="step-nav" aria-label="Previous and next steps">
-      <a class="btn btn-secondary" href="step-07.html">← wafpass-server</a>
-      <a class="btn btn-primary" href="step-09.html">Next: Integrations →</a>
+      <a class="btn btn-secondary" href="step-07.html">← Why Multiservice?</a>
+      <a class="btn btn-primary" href="step-09.html">Next: wafpass-server →</a>
     </nav>
   </main>
 

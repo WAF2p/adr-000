@@ -1978,10 +1978,290 @@ tbody tr:hover { background: var(--bg-soft); }
   .step-nav .btn { justify-content: center; }
 }
 
+/* Repo deep-link card */
+.repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--brand-500);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.repo-link:hover {
+  background: var(--bg-soft);
+  border-color: var(--brand-400);
+  color: var(--brand-600);
+}
+
+.repo-link svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.repo-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  margin: 1rem 0 1.5rem;
+}
+
+.repo-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-strong);
+}
+
+.repo-card span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Ecosystem dependency map */
+.ecosystem-map {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  margin: 1rem 0 1.5rem;
+  overflow-x: auto;
+}
+
+.ecosystem-map svg {
+  display: block;
+  width: 100%;
+  min-width: 640px;
+  height: auto;
+}
+
+.map-node {
+  fill: var(--surface);
+  stroke-width: 2;
+  rx: 10;
+  transition: filter 0.2s ease;
+}
+
+.map-node.docs { fill: color-mix(in srgb, var(--brand-400) 12%, var(--surface)); stroke: var(--brand-400); }
+.map-node.core { fill: color-mix(in srgb, var(--brand-500) 14%, var(--surface)); stroke: var(--brand-500); }
+.map-node.server { fill: color-mix(in srgb, var(--accent-warm) 18%, var(--surface)); stroke: var(--accent-warm); }
+.map-node.tool { fill: color-mix(in srgb, #8b5cf6 12%, var(--surface)); stroke: #8b5cf6; }
+.map-node.public { fill: color-mix(in srgb, #10b981 12%, var(--surface)); stroke: #10b981; }
+.map-node.export { fill: color-mix(in srgb, #f43f5e 12%, var(--surface)); stroke: #f43f5e; }
+.map-node.contract {
+  fill: color-mix(in srgb, var(--brand-500) 20%, var(--surface));
+  stroke: var(--brand-500);
+  stroke-width: 2.5;
+  stroke-dasharray: 8 4;
+}
+
+.ecosystem-map svg .map-node:hover {
+  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--brand-500) 28%, transparent));
+}
+
+.map-node-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--text-strong);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.map-node-label.long-label {
+  font-size: 9.5px;
+}
+
+.map-connector {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.map-connector.result {
+  stroke: var(--brand-500);
+  color: var(--brand-500);
+  stroke-dasharray: 6 4;
+}
+
+.map-connector.docs-flow {
+  stroke: var(--brand-400);
+  color: var(--brand-400);
+}
+
+.map-connector.server-flow {
+  stroke: var(--accent-warm);
+  color: var(--accent-warm);
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.map-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.map-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+}
+
+.map-legend-line {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+/* wafpass-result.json contract diagram */
+.contract-diagram {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.contract-node {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  text-align: center;
+}
+
+.contract-node .contract-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.contract-node h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+}
+
+.contract-node p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.json-callout {
+  position: relative;
+  background: var(--surface-2);
+  border-left: 3px solid var(--brand-500);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0 1.5rem;
+  font-size: 0.9rem;
+}
+
+.json-callout code {
+  background: var(--surface);
+}
+
+/* Inline annotations inside JSON examples */
+.json-comment {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.json-annotation {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0.15rem 0 0.6rem 1.25rem;
+  line-height: 1.45;
+  max-width: 65ch;
+}
+
+.json-key-note {
+  background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+  border-radius: 4px;
+  padding: 0 0.25em;
+}
+
+.json-section-title {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-500);
+  margin: 1.25rem 0 0.5rem;
+}
+
+pre.json-annotated {
+  position: relative;
+  padding-bottom: 0;
+}
+
+pre.json-annotated code {
+  display: block;
+}
+
+.json-annotation-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 720px) {
+  .json-annotation-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.json-annotation-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.json-annotation-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-strong);
+}
+
+.json-annotation-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  max-width: none;
+}
+
 /* Print */
 @media print {
   .site-header, .progress-track, .progress-stepper, .journey-nav, .step-nav, .theme-toggle, .ambient-bg, .scroll-hint, .step-page::before, .step-hero::before { display: none; }
   body { background: #fff; color: #000; }
   .page-section, .step-hero, .content-grid { padding: 1rem 0; }
   .hero { min-height: auto; }
+  .ecosystem-map svg { min-width: 100%; }
 }

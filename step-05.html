@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAF++ · ADR-000 · Why Multiservice?</title>
-  <meta name="description" content="Why WAF++ is a federation of independent repositories and services rather than a monorepo, and how the umbrella folder works.">
-  <meta name="keywords" content="WAF++, ADR-000, multiservice, federation, umbrella, not monorepo, architecture decision">
+  <title>WAF++ · ADR-000 · High-Level Architecture</title>
+  <meta name="description" content="High-level architecture of the WAF++ ecosystem: engine, server, dashboard, integrations, and the wafpass-result.json contract.">
+  <meta name="keywords" content="WAF++, ADR-000, architecture, wafpass-result.json, wafpass-core, wafpass-server, wafpass-dashboard, MCP, GitHub Action">
   <meta name="author" content="S. Lewandowski, A. Lajko, S. Meyer, T. Urlaub">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="WAF++ · ADR-000 · Why Multiservice?">
-  <meta property="og:description" content="Why WAF++ is a federation of independent repositories rather than a monorepo.">
+  <meta property="og:title" content="WAF++ · ADR-000 · High-Level Architecture">
+  <meta property="og:description" content="High-level architecture of the WAF++ ecosystem.">
   <meta property="og:url" content="https://adr-000.waf2p.dev/step-05.html">
   <meta property="og:site_name" content="WAF++ ADR-000">
   <meta property="og:image" content="https://adr-000.waf2p.dev/logo.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="WAF++ · ADR-000 · Why Multiservice?">
-  <meta name="twitter:description" content="Why WAF++ chose a federation of independent repositories.">
+  <meta name="twitter:title" content="WAF++ · ADR-000 · High-Level Architecture">
+  <meta name="twitter:description" content="High-level architecture of the WAF++ ecosystem.">
   <meta name="twitter:image" content="https://adr-000.waf2p.dev/logo.png">
   <link rel="canonical" href="https://adr-000.waf2p.dev/step-05.html">
   <link rel="icon" type="image/png" href="logo.png">
@@ -37,104 +37,79 @@
   </header>
 
   <main class="journey-main">
-        <nav class="progress-stepper" aria-label="Onboarding steps">
-      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
-      <a class="step" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
-      <a class="step" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
-      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
-      <a class="step active" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
-      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
-      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
-      <a class="step" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
-      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
-      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+    <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step " href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step " href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step " href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step " href="step-04.html"><span class="step-num">4</span><span class="step-label">Map</span></a>
+      <a class="step active" href="step-05.html"><span class="step-num">5</span><span class="step-label">Architecture</span></a>
+      <a class="step " href="step-06.html"><span class="step-num">6</span><span class="step-label">Contract</span></a>
+      <a class="step " href="step-07.html"><span class="step-num">7</span><span class="step-label">Why?</span></a>
+      <a class="step " href="step-08.html"><span class="step-num">8</span><span class="step-label">Engine</span></a>
+      <a class="step " href="step-09.html"><span class="step-num">9</span><span class="step-label">Server</span></a>
+      <a class="step " href="step-10.html"><span class="step-num">10</span><span class="step-label">Dashboard</span></a>
+      <a class="step " href="step-11.html"><span class="step-num">11</span><span class="step-label">Integrations</span></a>
+      <a class="step " href="step-12.html"><span class="step-num">12</span><span class="step-label">Start</span></a>
     </nav>
 
     <section class="step-hero">
-      <p class="step-kicker">Step 5 of 10</p>
-      <h1>Why Multiservice?</h1>
+      <p class="step-kicker">Step 5 of 12</p>
+      <h1>High-Level Architecture</h1>
       <p class="step-lead">
-        WAF++ is not a monorepo and not a single application. It is a <strong>federation of focused repositories</strong> — each with its own lifecycle, technology, and team — held together by one data contract and one API.
+        The WAF++ ecosystem is organised in layers: public surface, compliance platform, and external supporting tooling. A single JSON contract ties the layers together.
       </p>
     </section>
 
     <article class="content-grid">
-      <section class="card card-feature">
-        <h2>🧩 Not a monorepo — an umbrella of repos</h2>
-        <p>
-          The root folder that contains all repositories is only a convenience. It gives you a single place to open your editor and run cross-repo searches, but it does <strong>not</strong> make WAF++ a monorepo.
-        </p>
-        <ul class="pillar-list">
-          <li>Every component is an independent <code>git</code> repository.</li>
-          <li>Each repository has its own version, CI/CD pipeline, and release cycle.</li>
-          <li>There is no shared lockfile, shared build system, or shared package manager workspace.</li>
-          <li>The repositories are grouped in one folder because they solve one problem domain together.</li>
-        </ul>
-      </section>
-
-      <section class="card">
-        <h2>🎯 Why separate repositories?</h2>
-        <p>Splitting the ecosystem into independent repos was a deliberate architectural choice.</p>
-        <ul>
-          <li><strong>Clear ownership</strong> — a small team can own, build, and release one component without touching the others.</li>
-          <li><strong>Independent versioning</strong> — <code>wafpass-core</code> can ship v1.1.3 while <code>wafpass-dashboard</code> stays on v1.1.0.</li>
-          <li><strong>Technology freedom</strong> — Python for the engine and server, TypeScript/React for the UI, Ruby/Jekyll for the website.</li>
-          <li><strong>Isolation</strong> — a broken dashboard release cannot block a security fix in the engine.</li>
-          <li><strong>Reusability</strong> — <code>wafpass-core</code> can be installed and used without the server or dashboard.</li>
-        </ul>
-      </section>
-
-      <section class="card">
-        <h2>🧱 Why separate services?</h2>
-        <p>Each runtime component has a single, well-defined responsibility.</p>
-        <ul>
-          <li><strong>pass</strong> — parses IaC and evaluates controls (stateless compute).</li>
-          <li><strong>wafpass-server</strong> — owns persistence, auth, and business logic.</li>
-          <li><strong>wafpass-dashboard</strong> — renders the user interface and talks only to the server.</li>
-          <li><strong>wafpass-mcp</strong> — translates the server API into MCP tools for AI clients.</li>
-          <li><strong>wafpass-action</strong> — wraps the engine for CI/CD without owning its code.</li>
-        </ul>
-        <p>This keeps failure domains small and lets each service scale where it matters.</p>
-      </section>
-
       <section class="card card-wide">
-        <h2>🔗 What holds it together?</h2>
-        <p>Two contracts replace a single codebase:</p>
-        <div class="feature-grid" style="margin-bottom: 0;">
-          <div class="feature-card">
-            <h4>wafpass-result.json</h4>
-            <p>The central result schema emitted by the engine and consumed by the server, dashboard, MCP bridge, PDF reporter, and observability exports.</p>
-          </div>
-          <div class="feature-card">
-            <h4>/api/v1</h4>
-            <p>The versioned REST API surface of <code>wafpass-server</code>. Every downstream tool reads and writes through this contract.</p>
-          </div>
-        </div>
+        <h2>🏛️ Architecture layers</h2>
+        <pre class="ascii-art">┌─────────────────────────────────────────────────────────────────────────────┐
+│                              WAF++ Ecosystem                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Public surface                                                             │
+│   • waf2p.github.io  → Jekyll marketing site + Antora docs (framework)      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Compliance platform                                                          │
+│   • wafpass-core → CLI / library / CI scanner                                    │
+│   • wafpass-action      → GitHub Actions wrapper                           │
+│   • wafpass-server      → FastAPI + PostgreSQL persistence layer             │
+│   • wafpass-dashboard   → React SPA visualisation                            │
+│   • wafpass-mcp         → MCP bridge for AI assistants                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+        </pre>
       </section>
 
       <section class="card">
-        <h2>🚀 Build and release cadence</h2>
+        <h2>🔗 The central contract</h2>
+        <p>
+          The <strong><code>wafpass-result.json</code></strong> schema is the single source of truth between engine, server, dashboard, PDF reporter, and observability exports.
+        </p>
+        <p>Everything downstream consumes this contract, so versioning the schema is critical when adding new control result types or metadata. Read the full contract walk-through on <a href="step-06.html">Step 6: The wafpass-result.json Contract</a>.</p>
+      </section>
+
+      <section class="card">
+        <h2>🌐 Public surface</h2>
         <ul>
-          <li>Each repo releases when it is ready — no coordinated “big bang” cut.</li>
-          <li>PyPI packages, Docker images, npm builds, and GitHub Action tags live in their own repositories.</li>
-          <li>Cross-cutting changes are coordinated through ADRs and the shared result schema version.</li>
+          <li>Jekyll marketing site at <code>waf2p.github.io</code>.</li>
+          <li>Blog posts, team pages, events, and conference listings.</li>
+          <li>Integrated Antora docs viewer pulling from <code>framework</code> (<code>main-de</code>) and <code>framework-en</code> (<code>main-en</code>).</li>
         </ul>
       </section>
 
       <section class="card">
-        <h2>⚠️ Consequences for onboarding</h2>
+        <h2>🛡️ Compliance platform</h2>
+        <p>The engine runs inside CI or on a developer machine, produces a result, and either:</p>
         <ul>
-          <li>You clone several repositories, not one.</li>
-          <li>You run each component from its own directory.</li>
-          <li>There is no root-level orchestration file; per-repo READMEs are the source of truth.</li>
-          <li>Changes that touch the result contract need extra care because multiple repos depend on it.</li>
+          <li>Pushes it to <strong>wafpass-server</strong> for persistence, or</li>
+          <li>Writes local JSON/PDF reports and observability exports.</li>
         </ul>
+        <p>The dashboard, MCP bridge, and GitHub Action all communicate through the server API.</p>
       </section>
+
     </article>
-
     <nav class="step-nav" aria-label="Previous and next steps">
-      <a class="btn btn-secondary" href="step-04.html">← High-Level Architecture</a>
-      <a class="btn btn-primary" href="step-06.html">Next: wafpass-core →</a>
+      <a class="btn btn-secondary" href="step-04.html">← Ecosystem Map</a>
+      <a class="btn btn-primary" href="step-06.html">Next: The wafpass-result.json Contract →</a>
     </nav>
   </main>
 

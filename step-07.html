@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAF++ · ADR-000 · wafpass-server</title>
-  <meta name="description" content="Developer guide to wafpass-server: FastAPI ingestion, PostgreSQL persistence, auth, API routes, and testing strategy.">
-  <meta name="keywords" content="WAF++, wafpass-server, FastAPI, PostgreSQL, REST API, Pydantic, SQLAlchemy, authentication">
+  <title>WAF++ · ADR-000 · Why Multiservice?</title>
+  <meta name="description" content="Why WAF++ is a federation of independent repositories and services rather than a monorepo, and how the umbrella folder works.">
+  <meta name="keywords" content="WAF++, ADR-000, multiservice, federation, umbrella, not monorepo, architecture decision">
   <meta name="author" content="S. Lewandowski, A. Lajko, S. Meyer, T. Urlaub">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="WAF++ · ADR-000 · wafpass-server">
-  <meta property="og:description" content="Developer guide to wafpass-server: FastAPI + PostgreSQL persistence layer.">
+  <meta property="og:title" content="WAF++ · ADR-000 · Why Multiservice?">
+  <meta property="og:description" content="Why WAF++ is a federation of independent repositories rather than a monorepo.">
   <meta property="og:url" content="https://adr-000.waf2p.dev/step-07.html">
   <meta property="og:site_name" content="WAF++ ADR-000">
   <meta property="og:image" content="https://adr-000.waf2p.dev/logo.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="WAF++ · ADR-000 · wafpass-server">
-  <meta name="twitter:description" content="Developer guide to the WAF++ server.">
+  <meta name="twitter:title" content="WAF++ · ADR-000 · Why Multiservice?">
+  <meta name="twitter:description" content="Why WAF++ chose a federation of independent repositories.">
   <meta name="twitter:image" content="https://adr-000.waf2p.dev/logo.png">
   <link rel="canonical" href="https://adr-000.waf2p.dev/step-07.html">
   <link rel="icon" type="image/png" href="logo.png">
@@ -37,230 +37,105 @@
   </header>
 
   <main class="journey-main">
-        <nav class="progress-stepper" aria-label="Onboarding steps">
-      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
-      <a class="step" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
-      <a class="step" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
-      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
-      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
-      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
-      <a class="step active" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
-      <a class="step" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
-      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
-      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+    <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step " href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step " href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step " href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step " href="step-04.html"><span class="step-num">4</span><span class="step-label">Map</span></a>
+      <a class="step " href="step-05.html"><span class="step-num">5</span><span class="step-label">Architecture</span></a>
+      <a class="step " href="step-06.html"><span class="step-num">6</span><span class="step-label">Contract</span></a>
+      <a class="step active" href="step-07.html"><span class="step-num">7</span><span class="step-label">Why?</span></a>
+      <a class="step " href="step-08.html"><span class="step-num">8</span><span class="step-label">Engine</span></a>
+      <a class="step " href="step-09.html"><span class="step-num">9</span><span class="step-label">Server</span></a>
+      <a class="step " href="step-10.html"><span class="step-num">10</span><span class="step-label">Dashboard</span></a>
+      <a class="step " href="step-11.html"><span class="step-num">11</span><span class="step-label">Integrations</span></a>
+      <a class="step " href="step-12.html"><span class="step-num">12</span><span class="step-label">Start</span></a>
     </nav>
 
     <section class="step-hero">
-      <p class="step-kicker">Step 7 of 10</p>
-      <h1>wafpass-server</h1>
+      <p class="step-kicker">Step 7 of 12</p>
+      <h1>Why Multiservice?</h1>
       <p class="step-lead">
-        The central ingestion, persistence, and API layer. It receives <code>wafpass-result.json</code> files from CI, stores historical scans, and exposes REST endpoints for dashboards, webhooks, and integrations.
+        WAF++ is not a monorepo and not a single application. It is a <strong>federation of focused repositories</strong> — each with its own lifecycle, technology, and team — held together by one data contract and one API.
       </p>
     </section>
 
     <article class="content-grid">
+      <section class="card card-feature">
+        <h2>🧩 Not a monorepo — an umbrella of repos</h2>
+        <p>
+          The root folder that contains all repositories is only a convenience. It gives you a single place to open your editor and run cross-repo searches, but it does <strong>not</strong> make WAF++ a monorepo.
+        </p>
+        <ul class="pillar-list">
+          <li>Every component is an independent <code>git</code> repository.</li>
+          <li>Each repository has its own version, CI/CD pipeline, and release cycle.</li>
+          <li>There is no shared lockfile, shared build system, or shared package manager workspace.</li>
+          <li>The repositories are grouped in one folder because they solve one problem domain together.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>🎯 Why separate repositories?</h2>
+        <p>Splitting the ecosystem into independent repos was a deliberate architectural choice.</p>
+        <ul>
+          <li><strong>Clear ownership</strong> — a small team can own, build, and release one component without touching the others.</li>
+          <li><strong>Independent versioning</strong> — <code>wafpass-core</code> can ship v1.1.3 while <code>wafpass-dashboard</code> stays on v1.1.0.</li>
+          <li><strong>Technology freedom</strong> — Python for the engine and server, TypeScript/React for the UI, Ruby/Jekyll for the website.</li>
+          <li><strong>Isolation</strong> — a broken dashboard release cannot block a security fix in the engine.</li>
+          <li><strong>Reusability</strong> — <code>wafpass-core</code> can be installed and used without the server or dashboard.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>🧱 Why separate services?</h2>
+        <p>Each runtime component has a single, well-defined responsibility.</p>
+        <ul>
+          <li><strong>wafpass-core</strong> — parses IaC and evaluates controls (stateless compute).</li>
+          <li><strong>wafpass-server</strong> — owns persistence, auth, and business logic.</li>
+          <li><strong>wafpass-dashboard</strong> — renders the user interface and talks only to the server.</li>
+          <li><strong>wafpass-mcp</strong> — translates the server API into MCP tools for AI clients.</li>
+          <li><strong>wafpass-action</strong> — wraps the engine for CI/CD without owning its code.</li>
+        </ul>
+        <p>This keeps failure domains small and lets each service scale where it matters.</p>
+      </section>
+
       <section class="card card-wide">
-        <h2>🧰 Technology stack & patterns</h2>
-        <div class="feature-grid">
+        <h2>🔗 What holds it together?</h2>
+        <p>Two contracts replace a single codebase:</p>
+        <div class="feature-grid" style="margin-bottom: 0;">
           <div class="feature-card">
-            <h4>FastAPI</h4>
-            <p>Async Python web framework with automatic OpenAPI docs at <code>/docs</code> and <code>/redoc</code>.</p>
+            <h4>wafpass-result.json</h4>
+            <p>The central result schema emitted by the engine and consumed by the server, dashboard, MCP bridge, PDF reporter, and observability exports. Details on <a href="step-06.html">Step 6</a>.</p>
           </div>
           <div class="feature-card">
-            <h4>SQLAlchemy 2.x</h4>
-            <p>ORM with type annotations, async drivers, and explicit transaction boundaries.</p>
-          </div>
-          <div class="feature-card">
-            <h4>PostgreSQL</h4>
-            <p>Primary datastore for run history, accounts, and projects. JSONB columns store flexible result payloads.</p>
-          </div>
-          <div class="feature-card">
-            <h4>Pydantic v2</h4>
-            <p>Request/response models and settings management via <code>pydantic-settings</code>.</p>
-          </div>
-          <div class="feature-card">
-            <h4>uvicorn</h4>
-            <p>ASGI server. Use <code>uvicorn main:app --reload</code> locally, gunicorn+uvicorn workers in production.</p>
-          </div>
-          <div class="feature-card">
-            <h4>Docker</h4>
-            <p>Containerised deployment with multi-stage builds and a non-root user.</p>
+            <h4>/api/v1</h4>
+            <p>The versioned REST API surface of <code>wafpass-server</code>. Every downstream tool reads and writes through this contract.</p>
           </div>
         </div>
       </section>
 
-      <section class="card card-wide">
-        <h2>🗂️ Repository layout</h2>
-        <pre class="ascii-art">wafpass-server/
-├── app/
-│   ├── __init__.py
-│   ├── main.py              # FastAPI factory, middleware, lifespan
-│   ├── config.py            # Pydantic-settings, env var schema
-│   ├── database.py          # SQLAlchemy engine, session, migrations
-│   ├── models.py            # ORM entities (Run, Project, User, ApiKey)
-│   ├── schemas.py           # API request/response Pydantic models
-│   ├── routers/
-│   │   ├── runs.py          # POST /runs, GET /runs/{id}
-│   │   ├── projects.py      # CRUD for projects
-│   │   ├── api_keys.py      # Key lifecycle
-│   │   └── health.py        # Liveness and readiness probes
-│   ├── services/
-│   │   ├── result_store.py  # Validate and persist wafpass-result.json
-│   │   └── notifier.py      # Webhook dispatch, async queue
-│   └── dependencies.py      # Auth, DB session injection
-├── alembic/                 # Database migrations
-├── tests/
-│   ├── conftest.py          # pytest fixtures: db, client, auth
-│   └── routers/
-├── Dockerfile
-├── docker-compose.dev.yml
-├── pyproject.toml
-└── README.md
-        </pre>
-      </section>
-
       <section class="card">
-        <h2>🖥️ Run the server locally</h2>
-        <pre class="terminal"><code># Using Docker Compose (recommended)
-cd wafpass-server
-docker compose -f docker-compose.dev.yml up --build
-
-# Or natively with Python
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
-
-# Start PostgreSQL (or use the docker compose service)
-alembic upgrade head
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# Verify
-open http://localhost:8000/docs
-</code></pre>
-      </section>
-
-      <section class="card">
-        <h2>🎨 Code style & guidelines</h2>
+        <h2>🚀 Build and release cadence</h2>
         <ul>
-          <li><strong>Formatter:</strong> <code>black</code> with line length 100.</li>
-          <li><strong>Linter:</strong> <code>ruff</code>; keep import blocks clean and sorted.</li>
-          <li><strong>Typing:</strong> annotate all route handlers, services, and models; run <code>mypy</code> in CI.</li>
-          <li><strong>Async discipline:</strong> use <code>async/await</code> for I/O; CPU work goes to <code>asyncio.to_thread</code>.</li>
-          <li><strong>Transactions:</strong> never leak DB sessions; rely on dependency-injected session and rollback on exception.</li>
-          <li><strong>Routes:</strong> keep routers thin; business logic lives in <code>services/</code>.</li>
-          <li><strong>Settings:</strong> all environment-specific values flow through <code>app/config.py</code> and Pydantic validation.</li>
-          <li><strong>Errors:</strong> raise <code>HTTPException</code> with structured detail; log full stack traces server-side.</li>
+          <li>Each repo releases when it is ready — no coordinated “big bang” cut.</li>
+          <li>PyPI packages, Docker images, npm builds, and GitHub Action tags live in their own repositories.</li>
+          <li>Cross-cutting changes are coordinated through ADRs and the shared result schema version.</li>
         </ul>
-        <pre class="terminal"><code># Local quality gates
-ruff check app tests
-black --check app tests
-mypy app
-pytest
-</code></pre>
-      </section>
-
-      <section class="card card-wide">
-        <h2>🔐 Authentication & authorisation</h2>
-        <p>The server supports API key authentication for CI ingestion and OAuth2 / bearer token flows for the dashboard. API keys are hashed before storage; never log the plaintext key. Route dependency <code>get_current_user_or_key</code> accepts either path depending on the endpoint's contract.</p>
-        <pre class="terminal"><code># POST a result from CI
-curl -X POST http://localhost:8000/api/v1/runs \
-  -H "Authorization: Bearer $WAFPASS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d @wafpass-result.json
-
-# Response
-{
-  "run_id": "0192e6c4-...",
-  "project_id": "my-project",
-  "status": "stored",
-  "findings_count": 12
-}
-</code></pre>
-      </section>
-
-      <section class="card card-wide">
-        <h2>🧪 Testing strategy</h2>
-        <ol>
-          <li><strong>Unit tests:</strong> service functions with mocked repositories and notifiers.</li>
-          <li><strong>Integration tests:</strong> FastAPI <code>TestClient</code> against a real PostgreSQL service spun up via Docker or testcontainers.</li>
-          <li><strong>Migration tests:</strong> run <code>alembic upgrade head</code> and <code>downgrade -1</code> in CI.</li>
-          <li><strong>Contract tests:</strong> POST known <code>wafpass-result.json</code> fixtures and assert the stored JSONB payload matches.</li>
-        </ol>
-        <pre class="terminal"><code># tests/conftest.py skeleton
-import pytest
-from fastapi.testclient import TestClient
-from app.main import app
-from app.database import get_session
-
-@pytest.fixture
-def client(db_session):
-    def override_get_session():
-        yield db_session
-    app.dependency_overrides[get_session] = override_get_session
-    yield TestClient(app)
-    app.dependency_overrides.clear()
-</code></pre>
-      </section>
-
-      <section class="card card-wide">
-        <h2>📡 Key API routes</h2>
-        <table>
-          <thead>
-            <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>POST</td><td><code>/api/v1/runs</code></td><td>Ingest a new wafpass-result.json scan</td></tr>
-            <tr><td>GET</td><td><code>/api/v1/runs/{run_id}</code></td><td>Retrieve a stored result</td></tr>
-            <tr><td>GET</td><td><code>/api/v1/projects/{id}/runs</code></td><td>List runs for a project</td></tr>
-            <tr><td>POST</td><td><code>/api/v1/projects</code></td><td>Create a project</td></tr>
-            <tr><td>POST</td><td><code>/api/v1/api-keys</code></td><td>Generate an ingestion key</td></tr>
-            <tr><td>GET</td><td><code>/api/v1/health</code></td><td>Readiness and liveness</td></tr>
-          </tbody>
-        </table>
       </section>
 
       <section class="card">
-        <h2>🚀 Developer onboarding flow</h2>
-        <ol class="checklist">
-          <li>Clone <code>wafpass-server</code> and start the dev stack with Docker Compose.</li>
-          <li>Open <code>/docs</code> and POST a sample <code>wafpass-result.json</code>.</li>
-          <li>Read <code>app/models.py</code> and <code>app/routers/runs.py</code> to understand the ingestion flow.</li>
-          <li>Run the test suite and verify migration paths.</li>
-          <li>Pick an issue or extend a router; add tests before opening a PR.</li>
-        </ol>
-        <pre class="terminal"><code>cd wafpass-server
-docker compose -f docker-compose.dev.yml up -d
-alembic upgrade head
-pytest
-</code></pre>
-      </section>
-
-      <section class="card card-wide">
-        <h2>⚙️ Configuration</h2>
-        <p>All settings live in <code>app/config.py</code> and are validated at startup. Common variables:</p>
-        <ul style="margin-bottom: 0;">
-          <li><code>DATABASE_URL</code> — PostgreSQL DSN (asyncpg driver recommended).</li>
-          <li><code>SECRET_KEY</code> — used to sign tokens and API key hashes.</li>
-          <li><code>CORS_ORIGINS</code> — comma-separated allowed dashboard origins.</li>
-          <li><code>WAF_RESULT_MAX_SIZE_MB</code> — upload limit for result JSON.</li>
-          <li><code>WEBHOOK_TIMEOUT_SECONDS</code> — default timeout for outgoing webhooks.</li>
-        </ul>
-      </section>
-
-      <section class="card card-wide">
-        <h2>🔒 Security & trust assumptions</h2>
-        <ul style="margin-bottom: 0;">
-          <li>Run the server behind a TLS-terminating reverse proxy in production.</li>
-          <li>Rotate API keys regularly; revoke leaked keys via <code>DELETE /api/v1/api-keys/{id}</code>.</li>
-          <li>Never return raw API key values after creation; show them once.</li>
-          <li>Validate uploaded JSON strictly against the Pydantic result schema before storing.</li>
+        <h2>⚠️ Consequences for onboarding</h2>
+        <ul>
+          <li>You clone several repositories, not one.</li>
+          <li>You run each component from its own directory.</li>
+          <li>There is no root-level orchestration file; per-repo READMEs are the source of truth.</li>
+          <li>Changes that touch the result contract need extra care because multiple repos depend on it.</li>
         </ul>
       </section>
     </article>
-
     <nav class="step-nav" aria-label="Previous and next steps">
-      <a class="btn btn-secondary" href="step-06.html">← wafpass-core</a>
-      <a class="btn btn-primary" href="step-08.html">Next: wafpass-dashboard →</a>
+      <a class="btn btn-secondary" href="step-06.html">← The wafpass-result.json Contract</a>
+      <a class="btn btn-primary" href="step-08.html">Next: wafpass-core →</a>
     </nav>
   </main>
 

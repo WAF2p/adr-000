@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAF++ · ADR-000 · Integrations</title>
-  <meta name="description" content="Overview of WAF++ integrations: MCP bridge, GitHub Action, website, and how each extension is built and tested.">
-  <meta name="keywords" content="WAF++, wafpass-mcp, wafpass-action, GitHub Action, integrations, CI/CD, AI assistant, chatops">
+  <title>WAF++ · ADR-000 · wafpass-server</title>
+  <meta name="description" content="Developer guide to wafpass-server: FastAPI ingestion, PostgreSQL persistence, auth, API routes, and testing strategy.">
+  <meta name="keywords" content="WAF++, wafpass-server, FastAPI, PostgreSQL, REST API, Pydantic, SQLAlchemy, authentication">
   <meta name="author" content="S. Lewandowski, A. Lajko, S. Meyer, T. Urlaub">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="WAF++ · ADR-000 · Integrations">
-  <meta property="og:description" content="Overview of WAF++ integrations: MCP bridge, GitHub Action, website, documentation.">
+  <meta property="og:title" content="WAF++ · ADR-000 · wafpass-server">
+  <meta property="og:description" content="Developer guide to wafpass-server: FastAPI + PostgreSQL persistence layer.">
   <meta property="og:url" content="https://adr-000.waf2p.dev/step-09.html">
   <meta property="og:site_name" content="WAF++ ADR-000">
   <meta property="og:image" content="https://adr-000.waf2p.dev/logo.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="WAF++ · ADR-000 · Integrations">
-  <meta name="twitter:description" content="WAF++ integrations and extension points.">
+  <meta name="twitter:title" content="WAF++ · ADR-000 · wafpass-server">
+  <meta name="twitter:description" content="Developer guide to the WAF++ server.">
   <meta name="twitter:image" content="https://adr-000.waf2p.dev/logo.png">
   <link rel="canonical" href="https://adr-000.waf2p.dev/step-09.html">
   <link rel="icon" type="image/png" href="logo.png">
@@ -37,242 +37,302 @@
   </header>
 
   <main class="journey-main">
-        <nav class="progress-stepper" aria-label="Onboarding steps">
-      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
-      <a class="step" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
-      <a class="step" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
-      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
-      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
-      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
-      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
-      <a class="step" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
-      <a class="step active" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
-      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+    <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step " href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step " href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step " href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step " href="step-04.html"><span class="step-num">4</span><span class="step-label">Map</span></a>
+      <a class="step " href="step-05.html"><span class="step-num">5</span><span class="step-label">Architecture</span></a>
+      <a class="step " href="step-06.html"><span class="step-num">6</span><span class="step-label">Contract</span></a>
+      <a class="step " href="step-07.html"><span class="step-num">7</span><span class="step-label">Why?</span></a>
+      <a class="step " href="step-08.html"><span class="step-num">8</span><span class="step-label">Engine</span></a>
+      <a class="step active" href="step-09.html"><span class="step-num">9</span><span class="step-label">Server</span></a>
+      <a class="step " href="step-10.html"><span class="step-num">10</span><span class="step-label">Dashboard</span></a>
+      <a class="step " href="step-11.html"><span class="step-num">11</span><span class="step-label">Integrations</span></a>
+      <a class="step " href="step-12.html"><span class="step-num">12</span><span class="step-label">Start</span></a>
     </nav>
 
     <section class="step-hero">
-      <p class="step-kicker">Step 9 of 10</p>
-      <h1>Integrations</h1>
+      <p class="step-kicker">Step 9 of 12</p>
+      <h1>wafpass-server</h1>
       <p class="step-lead">
-        WAF++ plugs into the tools developers already use: CI pipelines, AI assistants, chatops, and observability platforms. This step covers how each integration is built, tested, and extended.
+        The central ingestion, persistence, and API layer. It receives <code>wafpass-result.json</code> files from CI, stores historical scans, and exposes REST endpoints for dashboards, webhooks, and integrations.
       </p>
     </section>
 
     <article class="content-grid">
       <section class="card card-wide">
-        <h2>🧰 Shared integration philosophy</h2>
-        <ul>
-          <li>Every integration consumes or produces the same <code>wafpass-result.json</code> contract.</li>
-          <li>Integrations do not duplicate engine logic; they orchestrate <code>wafpass-core</code> via CLI, API, or library calls.</li>
-          <li>Secrets and credentials stay in the host platform (GitHub secrets, environment variables, key vaults).</li>
-          <li>Each integration has its own repository with independent versioning and release cycle.</li>
-          <li>Releases follow semantic versioning and publish artefacts (Docker images, GitHub releases, npm/pypi packages).</li>
-        </ul>
-      </section>
-
-      <section class="card card-wide">
-        <h2>🔧 wafpass-action — GitHub Action</h2>
-        <p>A composite/action-type repository that runs <code>wafpass check</code> in GitHub Actions, posts PR annotations, and optionally pushes results to <code>wafpass-server</code>.</p>
-
-        <h3>Repository layout</h3>
-        <pre class="ascii-art">wafpass-action/
-├── action.yml              # GitHub Action inputs, outputs, runs
-├── README.md               # Usage examples and marketplace listing
-├── scripts/
-│   ├── entrypoint.sh       # Setup, scan, report
-│   └── annotate.py         # Convert findings to GitHub PR annotations
-├── tests/
-│   ├── test_annotate.py
-│   └── fixtures/
-└── .github/workflows/
-    └── ci.yml              # Self-test the action on every PR
-        </pre>
-
-        <h3>Technology choices</h3>
+        <h2>🧰 Technology stack & patterns</h2>
         <div class="feature-grid">
-          <div class="feature-card"><h4>Composite Action</h4><p>Keeps the action portable and avoids a custom Docker image unless needed.</p></div>
-          <div class="feature-card"><h4>Python 3.11+</h4><p>Annotation formatting and result normalisation in a small Python helper.</p></div>
-          <div class="feature-card"><h4>GitHub API</h4><p>Creates check-runs, PR annotations, and job summaries via <code>GITHUB_TOKEN</code>.</p></div>
-          <div class="feature-card"><h4>shell scripting</h4><p>Bash glue for installing wafpass-core and invoking the CLI.</p></div>
+          <div class="feature-card">
+            <h4>FastAPI</h4>
+            <p>Async Python web framework with automatic OpenAPI docs at <code>/docs</code> and <code>/redoc</code>.</p>
+          </div>
+          <div class="feature-card">
+            <h4>SQLAlchemy 2.x</h4>
+            <p>ORM with type annotations, async drivers, and explicit transaction boundaries.</p>
+          </div>
+          <div class="feature-card">
+            <h4>PostgreSQL</h4>
+            <p>Primary datastore for run history, accounts, and projects. JSONB columns store flexible result payloads.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Pydantic v2</h4>
+            <p>Request/response models and settings management via <code>pydantic-settings</code>.</p>
+          </div>
+          <div class="feature-card">
+            <h4>uvicorn</h4>
+            <p>ASGI server. Use <code>uvicorn main:app --reload</code> locally, gunicorn+uvicorn workers in production.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Docker</h4>
+            <p>Containerised deployment with multi-stage builds and a non-root user.</p>
+          </div>
         </div>
-
-        <h3>Code style & guidelines</h3>
-        <ul>
-          <li>Shell scripts pass <code>shellcheck</code> with no warnings.</li>
-          <li>Python helper code follows the same ruff/black rules as <code>pass</code>.</li>
-          <li>Inputs are validated early; fail the step with a clear message if required inputs are missing.</li>
-          <li>Never log secrets; mask API keys and tokens before printing.</li>
-          <li>Tag releases as <code>v1.2.3</code> and update the floating major tag (<code>v1</code>) for non-breaking releases.</li>
-        </ul>
-
-        <h3>Example workflow usage</h3>
-        <pre class="terminal"><code># .github/workflows/wafpass.yml in a consumer repo
-name: WAF++ Scan
-on: [pull_request, push]
-jobs:
-  scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: waf2p/wafpass-action@v1
-        with:
-          iac: terraform
-          path: ./infra
-          fail-on-severity: high
-          push-to-server: true
-          server-url: https://wafpass.example.com/api/v1/runs
-          api-key: ${{ secrets.WAFPASS_API_KEY }}
-</code></pre>
-
-        <h3>Developer onboarding</h3>
-        <ol class="checklist">
-          <li>Fork/clone <code>wafpass-action</code>.</li>
-          <li>Run <code>shellcheck scripts/*.sh</code> and the Python test suite.</li>
-          <li>Test the action in a personal repository using a local branch reference.</li>
-          <li>Update <code>action.yml</code> metadata and <code>README.md</code> when adding inputs.</li>
-          <li>Open a PR; the repo's own CI will exercise the action end-to-end.</li>
-        </ol>
       </section>
 
       <section class="card card-wide">
-        <h2>🤖 wafpass-mcp — Model Context Protocol server</h2>
-        <p>Exposes WAF++ scan data and controls as tools to AI assistants (Claude Desktop, IDEs, and other MCP clients). Users can ask questions like "Which Security controls failed in the last run?" or "Summarise the Cost findings."</p>
+        <div class="repo-card">
+          <div>
+            <p>FastAPI + PostgreSQL persistence layer and REST API.</p>
+            <span>https://github.com/WAF2p/wafpass-server</span>
+          </div>
+          <a class="repo-link" href="https://github.com/WAF2p/wafpass-server" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.419-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+            Open wafpass-server repo
+          </a>
+        </div>
+      </section>
 
-        <h3>Repository layout</h3>
-        <pre class="ascii-art">wafpass-mcp/
-├── src/
-│   ├── index.ts              # MCP server entry and transport
-│   ├── server.ts             # Tool definitions and handlers
-│   ├── tools/
-│   │   ├── listRuns.ts
-│   │   ├── getRun.ts
-│   │   ├── summariseFindings.ts
-│   │   └── listControls.ts
-│   ├── api.ts                # wafpass-server REST client
-│   └── types.ts              # Shared TypeScript types
+      <section class="card card-wide">
+        <h2>🗂️ Repository layout</h2>
+        <pre class="ascii-art">wafpass-server/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              # FastAPI factory, middleware, lifespan
+│   ├── config.py            # Pydantic-settings, env var schema
+│   ├── database.py          # SQLAlchemy engine, session, migrations
+│   ├── models.py            # ORM entities (Run, Project, User, ApiKey)
+│   ├── schemas.py           # API request/response Pydantic models
+│   ├── routers/
+│   │   ├── runs.py          # POST /runs, GET /runs/{id}
+│   │   ├── projects.py      # CRUD for projects
+│   │   ├── api_keys.py      # Key lifecycle
+│   │   └── health.py        # Liveness and readiness probes
+│   ├── services/
+│   │   ├── result_store.py  # Validate and persist wafpass-result.json
+│   │   └── notifier.py      # Webhook dispatch, async queue
+│   └── dependencies.py      # Auth, DB session injection
+├── alembic/                 # Database migrations
 ├── tests/
-│   └── tools.test.ts
-├── package.json
-├── tsconfig.json
+│   ├── conftest.py          # pytest fixtures: db, client, auth
+│   └── routers/
+├── Dockerfile
+├── docker-compose.dev.yml
+├── pyproject.toml
 └── README.md
         </pre>
-
-        <h3>Technology choices</h3>
-        <div class="feature-grid">
-          <div class="feature-card"><h4>TypeScript / Node.js 20+</h4><p>MCP SDK is TypeScript-first; strict type safety across tool schemas.</p></div>
-          <div class="feature-card"><h4>MCP SDK</h4><p>Implements stdio and SSE transports, tool registration, and schema validation.</p></div>
-          <div class="feature-card"><h4>Zod</h4><p>Defines tool argument schemas; errors are surfaced to the AI client clearly.</p></div>
-          <div class="feature-card"><h4>Axios</h4><p>HTTP client for the wafpass-server REST API.</p></div>
-        </div>
-
-        <h3>Code style & guidelines</h3>
-        <ul>
-          <li><strong>Formatter:</strong> <code>prettier</code>; <strong>Linter:</strong> <code>eslint</code> with TypeScript strict.</li>
-          <li>Each tool must declare a clear name, description, and Zod parameter schema.</li>
-          <li>Tool handlers return structured text; include Markdown tables for findings when useful.</li>
-          <li>Never expose raw API keys in tool responses; the server uses them internally only.</li>
-          <li>Handle MCP client lifecycle events (initialize, shutdown) gracefully.</li>
-        </ul>
-
-        <h3>Example tool skeleton</h3>
-        <pre class="terminal"><code>// src/tools/getRun.ts
-import { z } from 'zod';
-import { api } from '../api';
-
-export const name = 'wafpass_get_run';
-
-export const description =
-  'Retrieve a single WAF++ scan run by ID, including all findings.';
-
-export const parameters = z.object({
-  run_id: z.string().uuid().describe('The run UUID'),
-});
-
-export async function handler(args: z.infer<typeof parameters>) {
-  const run = await api.get(`/runs/${args.run_id}`);
-  return {
-    content: [
-      {
-        type: 'text',
-        text: `# Run ${run.data.run_id}\n\n` +
-          `- Project: ${run.data.project_id}\n` +
-          `- Findings: ${run.data.findings_count}\n\n` +
-          run.data.findings.map((f: any) => `- ${f.control_id}: ${f.title}`).join('\n'),
-      },
-    ],
-  };
-}
-</code></pre>
-
-        <h3>Developer onboarding</h3>
-        <ol class="checklist">
-          <li>Clone <code>wafpass-mcp</code> and install dependencies.</li>
-          <li>Configure a local MCP client (Claude Desktop config) pointing at your dev build.</li>
-          <li>Add a tool in <code>src/tools/</code>, register it in <code>server.ts</code>, and add tests.</li>
-          <li>Test the conversation flow end-to-end with the MCP inspector.</li>
-          <li>Update the README with example prompts that exercise your new tool.</li>
-        </ol>
-      </section>
-
-      <section class="card card-wide">
-        <h2>🌐 Webhooks and observability exporters</h2>
-        <p>The server can dispatch scan results to external systems. New exporters live either in <code>pass</code> (CLI-time) or in <code>wafpass-server</code> (server-time). Choose based on whether the export should happen in CI or after ingestion.</p>
-        <ul>
-          <li><strong>CLI exporters:</strong> run during <code>wafpass check</code>. Examples: Slack, Datadog, Splunk, Grafana annotations.</li>
-          <li><strong>Server exporters:</strong> trigger after a result is stored. Examples: outbound webhooks, email digest, ticket creation.</li>
-          <li><strong>Retry policy:</strong> exponential backoff with a dead-letter queue for failed webhooks.</li>
-        </ul>
-        <pre class="terminal"><code># Example server webhook payload
-{
-  "event": "run.completed",
-  "run_id": "0192e6c4-...",
-  "project_id": "my-project",
-  "summary": {
-    "total": 87,
-    "passed": 75,
-    "failed": 12,
-    "by_severity": { "critical": 1, "high": 3, "medium": 8 }
-  },
-  "url": "https://dashboard.example.com/runs/0192e6c4-..."
-}
-</code></pre>
-      </section>
-
-      <section class="card card-wide">
-        <h2>🧪 Testing strategy for integrations</h2>
-        <ol>
-          <li><strong>Unit tests:</strong> helper scripts, formatters, and tool handlers in isolation.</li>
-          <li><strong>Mocked external APIs:</strong> use nock (JS) or responses/httpx mocks (Python) for GitHub API and wafpass-server calls.</li>
-          <li><strong>Integration tests:</strong> run the GitHub Action in a test repo or the MCP server with the MCP inspector.</li>
-          <li><strong>Contract tests:</strong> verify produced payloads still match the receiver's schema.</li>
-        </ol>
       </section>
 
       <section class="card">
-        <h2>🚀 Integration developer onboarding flow</h2>
-        <ol class="checklist">
-          <li>Pick the integration type (GitHub Action, MCP tool, exporter, or new platform).</li>
-          <li>Read the relevant repo README and run its local test suite.</li>
-          <li>Read the <code>wafpass-result.json</code> schema to know what fields are available.</li>
-          <li>Implement the smallest useful feature: one action input, one MCP tool, or one exporter.</li>
-          <li>Add tests and documentation; follow the release/versioning rules.</li>
+        <h2>🖥️ Run the server locally</h2>
+        <pre class="terminal"><code># Using Docker Compose (recommended)
+cd wafpass-server
+docker compose -f docker-compose.dev.yml up --build
+
+# Or natively with Python
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+
+# Start PostgreSQL (or use the docker compose service)
+alembic upgrade head
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+# Verify
+open http://localhost:8000/docs
+</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>🎨 Code style & guidelines</h2>
+        <ul>
+          <li><strong>Formatter:</strong> <code>ruff format</code> with line length 100.</li>
+          <li><strong>Linter:</strong> <code>ruff check</code>; keep import blocks clean and sorted.</li>
+          <li><strong>Typing:</strong> annotate all route handlers, services, and models; run <code>mypy</code> in CI.</li>
+          <li><strong>Async discipline:</strong> use <code>async/await</code> for I/O; CPU work goes to <code>asyncio.to_thread</code>.</li>
+          <li><strong>Transactions:</strong> never leak DB sessions; rely on dependency-injected session and rollback on exception.</li>
+          <li><strong>Routes:</strong> keep routers thin; business logic lives in <code>services/</code>.</li>
+          <li><strong>Settings:</strong> all environment-specific values flow through <code>app/config.py</code> and Pydantic validation.</li>
+          <li><strong>Errors:</strong> raise <code>HTTPException</code> with structured detail; log full stack traces server-side.</li>
+        </ul>
+        <pre class="terminal"><code># Local quality gates
+ruff check app tests
+ruff format --check app tests
+mypy app
+pytest
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🔐 Authentication & authorisation</h2>
+        <p>The server supports API key authentication for CI ingestion and OAuth2 / bearer token flows for the dashboard. API keys are hashed before storage; never log the plaintext key. Route dependency <code>get_current_user_or_key</code> accepts either path depending on the endpoint's contract.</p>
+        <pre class="terminal"><code># POST a result from CI
+curl -X POST http://localhost:8000/api/v1/runs \
+  -H "Authorization: Bearer $WAFPASS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d @wafpass-result.json
+
+# Response
+{
+  "run_id": "0192e6c4-...",
+  "project_id": "my-project",
+  "status": "stored",
+  "findings_count": 12
+}
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🧪 Testing strategy</h2>
+        <ol>
+          <li><strong>Unit tests:</strong> service functions with mocked repositories and notifiers.</li>
+          <li><strong>Integration tests:</strong> FastAPI <code>TestClient</code> against a real PostgreSQL service spun up via Docker or testcontainers.</li>
+          <li><strong>Migration tests:</strong> run <code>alembic upgrade head</code> and <code>downgrade -1</code> in CI.</li>
+          <li><strong>Contract tests:</strong> POST known <code>wafpass-result.json</code> fixtures and assert the stored JSONB payload matches.</li>
         </ol>
+        <pre class="terminal"><code># tests/conftest.py skeleton
+import pytest
+from fastapi.testclient import TestClient
+from app.main import app
+from app.database import get_session
+
+@pytest.fixture
+def client(db_session):
+    def override_get_session():
+        yield db_session
+    app.dependency_overrides[get_session] = override_get_session
+    yield TestClient(app)
+    app.dependency_overrides.clear()
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>📡 REST API surface</h2>
+        <p>
+          The server exposes an auto-generated <strong>OpenAPI 3.1.0</strong> contract. You can browse the interactive docs locally at
+          <a href="http://localhost:8000/api/v1/docs" target="_blank" rel="noopener">http://localhost:8000/api/v1/docs</a>
+          or download the machine-readable spec at
+          <code>/openapi.json</code>. The docs are generated from the FastAPI routers, Pydantic schemas, and type annotations, so they stay in sync with the code.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h4>🍽️ Ingestion &amp; history</h4>
+            <p><code>POST /api/v1/runs</code> ingests <code>wafpass-result.json</code>. <code>GET /api/v1/runs/{run_id}</code>, export endpoints (CSV, Jira, Slack) and attestation support full auditability.</p>
+          </div>
+          <div class="feature-card">
+            <h4>🔐 Auth &amp; identity</h4>
+            <p>Bearer-token login/refresh, user management, API-key lifecycle, and OIDC/SAML SSO plus group-to-project mappings.</p>
+          </div>
+          <div class="feature-card">
+            <h4>📋 Controls &amp; compliance</h4>
+            <p>Control packs, active-pack activation, waivers, risk acceptances, and signed validation records with certificate export.</p>
+          </div>
+          <div class="feature-card">
+            <h4>🛡️ Evidence &amp; trust</h4>
+            <p>Evidence uploads, tamper-evident snapshots, public/shareable evidence views, QR codes, and HTML reports.</p>
+          </div>
+          <div class="feature-card">
+            <h4>🤖 Automation</h4>
+            <p>Programmatic scan triggers, sandboxed execution, AI-powered auto-fix with rollback, and notification dispatch.</p>
+          </div>
+          <div class="feature-card">
+            <h4>🏆 Reporting widgets</h4>
+            <p>Public JSON widgets, SVG badges, leaderboards, achievements, and audit-event logging for dashboards and CI badges.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🔢 API versioning strategy</h2>
+        <div class="two-col-text">
+          <div>
+            <h3>How versions are exposed</h3>
+            <ul>
+              <li>The current contract is published as <strong>version 1.0.0</strong> inside <code>info.version</code> of the OpenAPI spec.</li>
+              <li>Every route is namespaced under <code>/api/v1/...</code>. This keeps major versions isolated at the URL level.</li>
+              <li><code>GET /version</code> and <code>GET /health</code> are unversioned; clients use them for discovery and probes.</li>
+              <li>Internal-only routes (triggered scans, validation signing, update checks) live under the same <code>v1</code> prefix but behind stricter auth.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Compatibility rules</h3>
+            <ul>
+              <li>Within <code>v1</code> we only add optional fields and new endpoints; we never remove fields, rename paths, or change required request shapes.</li>
+              <li>A future incompatible change will be introduced as <code>/api/v2/...</code> while <code>v1</code> remains available during a documented deprecation window.</li>
+              <li>Dashboard and integrations pin the major version in their client configuration; the server never auto-upgrades a caller silently.</li>
+              <li>Validation schemas and signed certificates include the API version that produced them, so evidence remains verifiable years later.</li>
+            </ul>
+          </div>
+        </div>
+        <pre class="terminal"><code># Discover the current API contract
+curl http://localhost:8000/openapi.json | jq '.info.version, .paths | keys[0:3]'
+
+# Browse interactive docs (local network)
+open http://localhost:8000/api/v1/docs
+
+# Example: ingest a result with a pinned v1 key
+curl -X POST http://localhost:8000/api/v1/runs \
+  -H "Authorization: Bearer $WAFPASS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d @wafpass-result.json
+</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>🚀 Developer onboarding flow</h2>
+        <ol class="checklist">
+          <li>Clone <code>wafpass-server</code> and start the dev stack with Docker Compose.</li>
+          <li>Open <code>/docs</code> and POST a sample <code>wafpass-result.json</code>.</li>
+          <li>Read <code>app/models.py</code> and <code>app/routers/runs.py</code> to understand the ingestion flow.</li>
+          <li>Run the test suite and verify migration paths.</li>
+          <li>Pick an issue or extend a router; add tests before opening a PR.</li>
+        </ol>
+        <pre class="terminal"><code>cd wafpass-server
+docker compose -f docker-compose.dev.yml up -d
+alembic upgrade head
+pytest
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>⚙️ Configuration</h2>
+        <p>All settings live in <code>app/config.py</code> and are validated at startup. Common variables:</p>
+        <ul style="margin-bottom: 0;">
+          <li><code>DATABASE_URL</code> — PostgreSQL DSN (asyncpg driver recommended).</li>
+          <li><code>SECRET_KEY</code> — used to sign tokens and API key hashes.</li>
+          <li><code>CORS_ORIGINS</code> — comma-separated allowed dashboard origins.</li>
+          <li><code>WAF_RESULT_MAX_SIZE_MB</code> — upload limit for result JSON.</li>
+          <li><code>WEBHOOK_TIMEOUT_SECONDS</code> — default timeout for outgoing webhooks.</li>
+        </ul>
       </section>
 
       <section class="card card-wide">
         <h2>🔒 Security & trust assumptions</h2>
         <ul style="margin-bottom: 0;">
-          <li>Integrations must treat API keys and tokens as sensitive; mask them in logs and store them only in the host platform's secret manager.</li>
-          <li>MCP servers receive arbitrary natural-language instructions; validate tool arguments strictly and return minimal data by default.</li>
-          <li>GitHub Action inputs that accept paths must reject traversal patterns.</li>
-          <li>Webhook receivers should verify signatures or shared secrets when available.</li>
+          <li>Run the server behind a TLS-terminating reverse proxy in production.</li>
+          <li>Rotate API keys regularly; revoke leaked keys via <code>DELETE /api/v1/api-keys/{id}</code>.</li>
+          <li>Never return raw API key values after creation; show them once.</li>
+          <li>Validate uploaded JSON strictly against the Pydantic result schema before storing.</li>
         </ul>
       </section>
     </article>
-
     <nav class="step-nav" aria-label="Previous and next steps">
-      <a class="btn btn-secondary" href="step-08.html">← wafpass-dashboard</a>
-      <a class="btn btn-primary" href="step-10.html">Next: Getting Started →</a>
+      <a class="btn btn-secondary" href="step-08.html">← wafpass-core</a>
+      <a class="btn btn-primary" href="step-10.html">Next: wafpass-dashboard →</a>
     </nav>
   </main>
 

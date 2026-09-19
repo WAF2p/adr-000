@@ -98,6 +98,10 @@
 
       <div class="hero-stats">
         <div class="hero-stat">
+          <span class="hero-stat-num">12</span>
+          <span class="hero-stat-label">Stops</span>
+        </div>
+        <div class="hero-stat">
           <span class="hero-stat-num">8</span>
           <span class="hero-stat-label">Pillars</span>
         </div>
@@ -122,7 +126,7 @@
     <section id="journey-map" class="journey-section">
       <div class="section-header">
         <div class="section-eyebrow">Journey Map</div>
-        <h2 class="section-title">Ten stops to WAF++ mastery</h2>
+        <h2 class="section-title">Twelve stops to WAF++ mastery</h2>
         <p class="section-lead">Each step builds on the last. Click any card to dive in, or follow the numbered path from start to finish.</p>
       </div>
 
@@ -145,7 +149,7 @@
 
         <a class="journey-tile" href="step-03.html">
           <div class="tile-number">03</div>
-          <div class="tile-icon">🗺️</div>
+          <div class="tile-icon">🗂️</div>
           <h3>Repository Landscape</h3>
           <p>What's in the umbrella folder and how the project tree is organised.</p>
           <span class="tile-link">Explore →</span>
@@ -153,54 +157,70 @@
 
         <a class="journey-tile" href="step-04.html">
           <div class="tile-number">04</div>
-          <div class="tile-icon">🏛️</div>
-          <h3>Architecture</h3>
-          <p>How the public surface, compliance platform, and tools connect.</p>
-          <span class="tile-link">See the layers →</span>
+          <div class="tile-icon">🗺️</div>
+          <h3>Ecosystem Map</h3>
+          <p>A visual map of every repository, component, dependency, and data flow.</p>
+          <span class="tile-link">See the map →</span>
         </a>
 
         <a class="journey-tile" href="step-05.html">
           <div class="tile-number">05</div>
+          <div class="tile-icon">🏛️</div>
+          <h3>High-Level Architecture</h3>
+          <p>How the public surface, compliance platform, and tools connect.</p>
+          <span class="tile-link">See the layers →</span>
+        </a>
+
+        <a class="journey-tile" href="step-06.html">
+          <div class="tile-number">06</div>
+          <div class="tile-icon">📝</div>
+          <h3>The wafpass-result.json Contract</h3>
+          <p>The single result schema that ties engine, server, dashboard, and integrations together.</p>
+          <span class="tile-link">Read the contract →</span>
+        </a>
+
+        <a class="journey-tile" href="step-07.html">
+          <div class="tile-number">07</div>
           <div class="tile-icon">🧩</div>
           <h3>Why Multiservice?</h3>
           <p>Why we chose independent repos and services, and how the umbrella folder works.</p>
           <span class="tile-link">Understand →</span>
         </a>
 
-        <a class="journey-tile" href="step-06.html">
-          <div class="tile-number">06</div>
+        <a class="journey-tile" href="step-08.html">
+          <div class="tile-number">08</div>
           <div class="tile-icon">⚙️</div>
           <h3>wafpass-core</h3>
           <p>The IaC compliance engine, CLI, result schema, and plugins.</p>
           <span class="tile-link">Inspect →</span>
         </a>
 
-        <a class="journey-tile" href="step-07.html">
-          <div class="tile-number">07</div>
+        <a class="journey-tile" href="step-09.html">
+          <div class="tile-number">09</div>
           <div class="tile-icon">🖥️</div>
           <h3>wafpass-server</h3>
           <p>FastAPI + PostgreSQL persistence, auth, and role model.</p>
           <span class="tile-link">Connect →</span>
         </a>
 
-        <a class="journey-tile" href="step-08.html">
-          <div class="tile-number">08</div>
+        <a class="journey-tile" href="step-10.html">
+          <div class="tile-number">10</div>
           <div class="tile-icon">📊</div>
           <h3>wafpass-dashboard</h3>
           <p>React SPA for visualising compliance posture and managing work.</p>
           <span class="tile-link">Visualise →</span>
         </a>
 
-        <a class="journey-tile" href="step-09.html">
-          <div class="tile-number">09</div>
+        <a class="journey-tile" href="step-11.html">
+          <div class="tile-number">11</div>
           <div class="tile-icon">🔗</div>
           <h3>Integrations</h3>
           <p>MCP bridge, GitHub Action, website, and documentation flow.</p>
           <span class="tile-link">Integrate →</span>
         </a>
 
-        <a class="journey-tile journey-tile-final" href="step-10.html">
-          <div class="tile-number">10</div>
+        <a class="journey-tile journey-tile-final" href="step-12.html">
+          <div class="tile-number">12</div>
           <div class="tile-icon">🚀</div>
           <h3>Getting Started</h3>
           <p>Clone, run, scan, and get productive with the full stack.</p>
@@ -216,7 +236,7 @@
           <p>Every component speaks <code>wafpass-result.json</code> — the single source of truth between engine, server, dashboard, reports, and AI assistants.</p>
         </div>
         <div class="ecosystem-diagram">
-          <div class="ecosystem-node node-core">pass</div>
+          <div class="ecosystem-node node-core">wafpass-core</div>
           <div class="ecosystem-connector"></div>
           <div class="ecosystem-node node-server">server</div>
           <div class="ecosystem-connector"></div>

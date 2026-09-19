@@ -37,21 +37,23 @@
   </header>
 
   <main class="journey-main">
-        <nav class="progress-stepper" aria-label="Onboarding steps">
-      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+    <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step " href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
       <a class="step active" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
-      <a class="step" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
-      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
-      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
-      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
-      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
-      <a class="step" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
-      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
-      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+      <a class="step " href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step " href="step-04.html"><span class="step-num">4</span><span class="step-label">Map</span></a>
+      <a class="step " href="step-05.html"><span class="step-num">5</span><span class="step-label">Architecture</span></a>
+      <a class="step " href="step-06.html"><span class="step-num">6</span><span class="step-label">Contract</span></a>
+      <a class="step " href="step-07.html"><span class="step-num">7</span><span class="step-label">Why?</span></a>
+      <a class="step " href="step-08.html"><span class="step-num">8</span><span class="step-label">Engine</span></a>
+      <a class="step " href="step-09.html"><span class="step-num">9</span><span class="step-label">Server</span></a>
+      <a class="step " href="step-10.html"><span class="step-num">10</span><span class="step-label">Dashboard</span></a>
+      <a class="step " href="step-11.html"><span class="step-num">11</span><span class="step-label">Integrations</span></a>
+      <a class="step " href="step-12.html"><span class="step-num">12</span><span class="step-label">Start</span></a>
     </nav>
 
     <section class="step-hero">
-      <p class="step-kicker">Step 2 of 10</p>
+      <p class="step-kicker">Step 2 of 12</p>
       <h1>framework & framework-en</h1>
       <p class="step-lead">
         The heart of WAF++. It defines the 8 pillars, the machine-readable control catalogues, and all human-readable guidance. <code>framework</code> and <code>framework-en</code> are the same git repository checked out on two different branches.
@@ -127,13 +129,34 @@
       </section>
 
       <section class="card">
-        <h2>🌐 German vs English</h2>
-        <p>WAF++ ships in two languages. Both are maintained in the same repository, on separate long-lived branches:</p>
+        <h2>🌐 Why two branches, not one?</h2>
+        <p>WAF++ ships in two languages. At first glance it may look simpler to keep both languages in a single branch — for example, side-by-side folders or one merged Antora component. We deliberately chose <strong>two long-lived branches</strong> in the same repository because translations are not just file copies; they are independent release streams with their own review cadence, quality gates, and audiences.</p>
         <ul>
           <li><strong>German:</strong> <code>framework/</code> → branch <code>main-de</code>.</li>
           <li><strong>English:</strong> <code>framework-en/</code> → branch <code>main-en</code>.</li>
         </ul>
-        <p>The two directories are independent working copies of the same git history. You can merge translations, cherry-pick fixes, or release one language before the other.</p>
+        <p>The advantages of the two-branch model:</p>
+        <ul>
+          <li><strong>Independent releases:</strong> A German terminology change does not have to wait for the English translation to be ready, and vice versa. Each branch has its own <code>antora.yml</code> version (e.g. <code>1.0.2-de</code> / <code>1.0.2-en</code>).</li>
+          <li><strong>Clear diffs and reviews:</strong> A PR against <code>main-de</code> only touches German content, so reviewers do not have to filter unrelated English changes.</li>
+          <li><strong>Cherry-pick friendly:</strong> A factual fix made in German can be cherry-picked to <code>main-en</code> without dragging along layout or translation work.</li>
+          <li><strong>Tooling simplicity:</strong> Antora components map cleanly to one language each; the website playbook points at both sibling directories without special merge logic.</li>
+          <li><strong>Future languages:</strong> Adding a third language means adding a third branch, not restructuring a monolithic folder tree.</li>
+        </ul>
+        <p>The trade-off is that contributors must open PRs against the correct branch. When a change affects both languages, create the corresponding follow-up issue/PR for the other branch so the two editions stay in sync.</p>
+
+        <div class="repo-card">
+          <div>
+            <p>Canonical framework repository (branches <code>main-de</code> and <code>main-en</code>).</p>
+            <span>https://github.com/WAF2p/framework</span>
+          </div>
+          <a class="repo-link" href="https://github.com/WAF2p/framework" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.419-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+            Open framework repo
+          </a>
+        </div>
       </section>
 
       <section class="card">
@@ -167,8 +190,8 @@ git clone --single-branch --branch main-en \
       <section class="card">
         <h2>🧪 Validate controls locally</h2>
         <p>The engine reads the same YAML control files, so you can verify syntax and IDs without running a full site build.</p>
-        <pre class="terminal"><code># From the pass/ repo, after installing wafpass-core
-cd ../pass
+        <pre class="terminal"><code># From the wafpass-core/ repo, after installing wafpass-core
+cd ../wafpass-core
 wafpass controls list ../framework/modules/controls/controls/
 
 # Or run a quick scan against dummy fixtures
@@ -218,7 +241,6 @@ task site:serve      # builds Antora docs + Jekyll site
         </ul>
       </section>
     </article>
-
     <nav class="step-nav" aria-label="Previous and next steps">
       <a class="btn btn-secondary" href="step-01.html">← What is WAF++?</a>
       <a class="btn btn-primary" href="step-03.html">Next: Repository Landscape →</a>

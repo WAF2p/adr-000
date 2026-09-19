@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAF++ · ADR-000 · Getting Started</title>
-  <meta name="description" content="Getting started with WAF++: clone the umbrella repos, run the local stack, and verify your developer onboarding.">
-  <meta name="keywords" content="WAF++, ADR-000, getting started, onboarding, clone, local stack, wafpass, developer setup">
+  <title>WAF++ · ADR-000 · wafpass-dashboard</title>
+  <meta name="description" content="Developer guide to wafpass-dashboard: React SPA architecture, visualisation patterns, API consumption, and frontend conventions.">
+  <meta name="keywords" content="WAF++, wafpass-dashboard, React, SPA, dashboard, compliance posture, TypeScript, frontend">
   <meta name="author" content="S. Lewandowski, A. Lajko, S. Meyer, T. Urlaub">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="WAF++ · ADR-000 · Getting Started">
-  <meta property="og:description" content="Clone, run, scan, and get productive with the full WAF++ stack.">
+  <meta property="og:title" content="WAF++ · ADR-000 · wafpass-dashboard">
+  <meta property="og:description" content="Developer guide to wafpass-dashboard: React SPA for compliance visualisation.">
   <meta property="og:url" content="https://adr-000.waf2p.dev/step-10.html">
   <meta property="og:site_name" content="WAF++ ADR-000">
   <meta property="og:image" content="https://adr-000.waf2p.dev/logo.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="WAF++ · ADR-000 · Getting Started">
-  <meta name="twitter:description" content="Getting started with the WAF++ stack.">
+  <meta name="twitter:title" content="WAF++ · ADR-000 · wafpass-dashboard">
+  <meta name="twitter:description" content="Developer guide to the WAF++ dashboard.">
   <meta name="twitter:image" content="https://adr-000.waf2p.dev/logo.png">
   <link rel="canonical" href="https://adr-000.waf2p.dev/step-10.html">
   <link rel="icon" type="image/png" href="logo.png">
@@ -37,153 +37,248 @@
   </header>
 
   <main class="journey-main">
-            <nav class="progress-stepper" aria-label="Onboarding steps">
-      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
-      <a class="step" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
-      <a class="step" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
-      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
-      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
-      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
-      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
-      <a class="step" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
-      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
-      <a class="step active" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+    <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step " href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step " href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+      <a class="step " href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
+      <a class="step " href="step-04.html"><span class="step-num">4</span><span class="step-label">Map</span></a>
+      <a class="step " href="step-05.html"><span class="step-num">5</span><span class="step-label">Architecture</span></a>
+      <a class="step " href="step-06.html"><span class="step-num">6</span><span class="step-label">Contract</span></a>
+      <a class="step " href="step-07.html"><span class="step-num">7</span><span class="step-label">Why?</span></a>
+      <a class="step " href="step-08.html"><span class="step-num">8</span><span class="step-label">Engine</span></a>
+      <a class="step " href="step-09.html"><span class="step-num">9</span><span class="step-label">Server</span></a>
+      <a class="step active" href="step-10.html"><span class="step-num">10</span><span class="step-label">Dashboard</span></a>
+      <a class="step " href="step-11.html"><span class="step-num">11</span><span class="step-label">Integrations</span></a>
+      <a class="step " href="step-12.html"><span class="step-num">12</span><span class="step-label">Start</span></a>
     </nav>
 
     <section class="step-hero">
-      <p class="step-kicker">Step 10 of 10</p>
-      <h1>Getting Started</h1>
+      <p class="step-kicker">Step 10 of 12</p>
+      <h1>wafpass-dashboard</h1>
       <p class="step-lead">
-        Enough reading — time to run the stack. This step gives you the clone layout, the local stack command, per-repo workflows, and a checklist to verify you are productive.
+        The browser-based cockpit. It visualises scan history, drill-down findings, trends, and compliance posture for teams and auditors.
       </p>
     </section>
 
     <article class="content-grid">
       <section class="card card-wide">
-        <h2>📥 Clone layout</h2>
-        <pre class="terminal"><code>mkdir waf++
-cd waf++
-# framework has two branches: main-de and main-en; check out each into its own directory.
-git clone --single-branch --branch main-de https://github.com/WAF2p/framework.git framework
-git clone --single-branch --branch main-en https://github.com/WAF2p/framework.git framework-en
-git clone https://github.com/WAF2p/waf2p.github.io.git
-git clone https://github.com/WAF2p/pass.git
-git clone https://github.com/WAF2p/wafpass-server.git
-git clone https://github.com/WAF2p/wafpass-dashboard.git
-git clone https://github.com/WAF2p/wafpass-mcp.git
-git clone https://github.com/WAF2p/wafpass-action.git
-</code></pre>
+        <h2>🧰 Technology stack & patterns</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h4>React 18+</h4>
+            <p>Functional components and hooks. Keep components small and compose through props, not inheritance.</p>
+          </div>
+          <div class="feature-card">
+            <h4>TypeScript</h4>
+            <p>Strict mode enabled. Define shared types in <code>src/types/</code> and derive API shapes from the backend OpenAPI spec.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Vite</h4>
+            <p>Fast dev server and production builds. Environment variables use <code>VITE_*</code> prefix.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Tailwind CSS</h4>
+            <p>Utility-first styling. Custom design tokens live in <code>tailwind.config.js</code>.</p>
+          </div>
+          <div class="feature-card">
+            <h4>TanStack Query</h4>
+            <p>Server-state cache, loading/error UI, background refetching, and optimistic updates.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Recharts / Chart.js</h4>
+            <p>Trend charts, radar diagrams, and pie charts for pillar distribution and severity.</p>
+          </div>
+        </div>
       </section>
 
       <section class="card card-wide">
-        <h2>🚀 Run the local stack</h2>
-        <p>There is no umbrella <code>docker-compose.yml</code> in this ADR. Start each component from its own directory:</p>
-        <pre class="terminal"><code># 1. Start PostgreSQL and wafpass-server
-cd wafpass-server
-pip install -e ".[dev]"
-alembic upgrade head
-uvicorn wafpass_server.main:app --reload
+        <div class="repo-card">
+          <div>
+            <p>React SPA for visualising compliance posture and managing work.</p>
+            <span>https://github.com/WAF2p/wafpass-dashboard</span>
+          </div>
+          <a class="repo-link" href="https://github.com/WAF2p/wafpass-dashboard" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.419-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+            Open wafpass-dashboard repo
+          </a>
+        </div>
+      </section>
 
-# 2. In another terminal, start the dashboard
-cd ../wafpass-dashboard
-npm install
-npm run dev
-
-# 3. Run a scan and push it to the server
-cd ../pass
-wafpass check ./dummy_code --output json \
-  --push http://localhost:8000/api/v1/runs --api-key key
-</code></pre>
-        <p>See each repo's <code>README.md</code> for exact environment variables and ports.</p>
+      <section class="card card-wide">
+        <h2>🗂️ Repository layout</h2>
+        <pre class="ascii-art">wafpass-dashboard/
+├── public/
+├── src/
+│   ├── main.tsx              # React root, Vite entry
+│   ├── App.tsx               # Router shell and layout
+│   ├── routes/               # Page-level route components
+│   │   ├── Dashboard.tsx
+│   │   ├── RunDetail.tsx
+│   │   ├── ProjectList.tsx
+│   │   └── Settings.tsx
+│   ├── components/           # Reusable UI blocks
+│   │   ├── ui/               # Buttons, cards, inputs, badges
+│   │   ├── charts/           # Recharts wrappers
+│   │   └── findings/         # Finding cards, filters, tables
+│   ├── hooks/                # Custom hooks (useRuns, useProjects)
+│   ├── api/                  # Axios/fetch client and generated types
+│   ├── types/                # Shared TypeScript types
+│   ├── stores/               # Zustand or Context state slices
+│   ├── lib/                  # Utilities (dates, formatters, theme)
+│   └── styles/               # Global CSS and Tailwind directives
+├── tests/
+│   ├── unit/                 # Vitest + React Testing Library
+│   └── e2e/                  # Playwright smoke tests
+├── index.html
+├── package.json
+├── tailwind.config.js
+├── tsconfig.json
+└── vite.config.ts
+        </pre>
       </section>
 
       <section class="card">
-        <h2>📚 Documentation workflow</h2>
-        <p>Edit <code>framework</code> (branch <code>main-de</code>) / <code>framework-en</code> (branch <code>main-en</code>) <code>.adoc</code> files and preview through the website repo.</p>
-        <pre class="terminal"><code>cd waf2p.github.io
-task deps:install
-task site:serve
-# → http://localhost:8000
-</code></pre>
-      </section>
-
-      <section class="card">
-        <h2>🐍 Engine workflow</h2>
-        <p>Develop in <code>pass/</code> with an editable install.</p>
-        <pre class="terminal"><code>cd pass
-pip install -e .
-pytest
-</code></pre>
-      </section>
-
-      <section class="card">
-        <h2>⚙️ Server workflow</h2>
-        <pre class="terminal"><code>cd wafpass-server
-pip install -e ".[dev]"
-export DATABASE_URL=postgresql+asyncpg://.../wafpass
-alembic upgrade head
-uvicorn wafpass_server.main:app --reload
-</code></pre>
-      </section>
-
-      <section class="card">
-        <h2>💻 Dashboard workflow</h2>
+        <h2>🖥️ Run the dashboard locally</h2>
         <pre class="terminal"><code>cd wafpass-dashboard
 npm install
+
+# Point to a local server (or mock proxy)
+echo "VITE_API_URL=http://localhost:8000/api/v1" > .env.local
+
 npm run dev
-# → http://localhost:5173
+# open http://localhost:5173
+
+# Storybook (if configured)
+npm run storybook
+
+# Production build
+npm run build
+npm run preview
 </code></pre>
       </section>
 
       <section class="card">
-        <h2>🤖 MCP workflow</h2>
-        <pre class="terminal"><code>cd wafpass-mcp
-pip install -e ".[dev]"
-# Then configure Claude Desktop per README.md
+        <h2>🎨 Code style & guidelines</h2>
+        <ul>
+          <li><strong>Formatter:</strong> <code>prettier</code> with project config; run <code>npm run format</code>.</li>
+          <li><strong>Linter:</strong> <code>eslint</code> with TypeScript and React hooks rules; zero warnings in CI.</li>
+          <li><strong>Components:</strong> one component per file; co-locate styles if they are component-specific.</li>
+          <li><strong>Hooks:</strong> extract data-fetching and side effects into custom hooks; keep UI hooks lean.</li>
+          <li><strong>Types:</strong> no <code>any</code> without justification; prefer interfaces for props and types for unions/derived shapes.</li>
+          <li><strong>Accessibility:</strong> semantic HTML, ARIA labels, keyboard focus states, and colour-contrast checks.</li>
+          <li><strong>Performance:</strong> memoise expensive renders and chart data; lazy-load route components.</li>
+          <li><strong>Commits:</strong> conventional commits, e.g. <code>feat(dashboard): add severity filter</code>.</li>
+        </ul>
+        <pre class="terminal"><code># Local quality gates
+npm run lint
+npm run format:check
+npm run typecheck
+npm run test
 </code></pre>
       </section>
 
       <section class="card card-wide">
-        <h2>✅ Onboarding checklist</h2>
-        <ul class="checklist">
-          <li><input type="checkbox" disabled> Read this ADR (ADR-000).</li>
-          <li><input type="checkbox" disabled> Start <code>wafpass-server</code> and <code>wafpass-dashboard</code> locally by following their <code>README.md</code> files.</li>
-          <li><input type="checkbox" disabled> Open the dashboard and log in with the seeded admin account.</li>
-          <li><input type="checkbox" disabled> Run <code>wafpass check ./dummy_code --summary</code> from the <code>pass</code> repo to see the CLI in action.</li>
-          <li><input type="checkbox" disabled> Push a result to the local server and view it in the dashboard.</li>
-          <li><input type="checkbox" disabled> Read the per-repo <code>README.md</code> and <code>TECH.md</code> / <code>AGENTS.md</code> for the component you will work on.</li>
-          <li><input type="checkbox" disabled> For docs work: run <code>task site:serve</code> in <code>waf2p.github.io</code> and edit <code>.adoc</code> files in <code>framework</code> (branch <code>main-de</code>) / <code>framework-en</code> (branch <code>main-en</code>).</li>
-          <li><input type="checkbox" disabled> For AI/MCP work: follow <code>wafpass-mcp/README.md</code> to connect Claude Desktop.</li>
+        <h2>🎨 Design system & glass-morphism</h2>
+        <p>The dashboard shares the same visual language as <a href="https://waf2p.dev" target="_blank" rel="noopener">waf2p.dev</a>: soft gradients, translucent cards, subtle borders, and theme-aware colour tokens.</p>
+        <ul>
+          <li>Use CSS variables for light/dark palettes; do not hard-code colours.</li>
+          <li>Cards use a semi-transparent background with backdrop blur for the glass effect.</li>
+          <li>Accent colour is the WAF++ blue (#0094FF); severity colours are red/amber/green/neutral.</li>
+          <li>The theme toggle sets <code>data-theme</code> on the document root and persists the choice.</li>
+          <li>Mobile-first grids: 1 column on phone, 2 on tablet, 3+ on desktop.</li>
+        </ul>
+        <pre class="terminal"><code>/* Example glass card (Tailwind + custom CSS) */
+.glass-card {
+  @apply rounded-2xl border p-6;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  border-color: rgba(15, 23, 42, 0.09);
+}
+
+[data-theme="dark"] .glass-card {
+  background: rgba(15, 23, 42, 0.60);
+  border-color: rgba(148, 163, 184, 0.14);
+}
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🧪 Testing strategy</h2>
+        <ol>
+          <li><strong>Unit tests:</strong> Vitest + React Testing Library for components, hooks, and utilities.</li>
+          <li><strong>Mocked API:</strong> MSW (Mock Service Worker) intercepts calls during tests and Storybook.</li>
+          <li><strong>Visual regression:</strong> Storybook stories for every reusable component.</li>
+          <li><strong>E2E:</strong> Playwright runs login, upload, navigation, and export flows against a real backend.</li>
+          <li><strong>Accessibility:</strong> axe-core in CI catches missing labels and contrast issues.</li>
+        </ol>
+        <pre class="terminal"><code># Watch mode during development
+npm run test -- --watch
+
+# Run a single test file
+npx vitest run src/components/charts/PillarChart.test.tsx
+
+# E2E
+npx playwright test
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🔌 API integration</h2>
+        <p>The dashboard consumes <code>wafpass-server</code> REST endpoints. All server-state lives in TanStack Query; local UI state lives in Zustand or React Context. Generated types from the OpenAPI spec are kept in <code>src/api/openapi.ts</code> and refreshed when the backend contract changes.</p>
+        <pre class="terminal"><code>// src/hooks/useRuns.ts example
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/api/client';
+
+export function useRuns(projectId: string) {
+  return useQuery({
+    queryKey: ['runs', projectId],
+    queryFn: () => apiClient.get(`/projects/${projectId}/runs`).then(r => r.data),
+  });
+}
+</code></pre>
+      </section>
+
+      <section class="card">
+        <h2>🚀 Developer onboarding flow</h2>
+        <ol class="checklist">
+          <li>Clone <code>wafpass-dashboard</code> and install dependencies.</li>
+          <li>Start <code>wafpass-server</code> locally (or use MSW mocks) and set <code>VITE_API_URL</code>.</li>
+          <li>Explore <code>src/routes/Dashboard.tsx</code> and <code>src/components/charts/</code>.</li>
+          <li>Add a small UI component with a Storybook story and a unit test.</li>
+          <li>Run lint, typecheck, and tests before opening a PR.</li>
+        </ol>
+        <pre class="terminal"><code>cd wafpass-dashboard
+npm install
+echo "VITE_API_URL=http://localhost:8000/api/v1" > .env.local
+npm run dev
+</code></pre>
+      </section>
+
+      <section class="card card-wide">
+        <h2>🗃️ State management rules</h2>
+        <ul style="margin-bottom: 0;">
+          <li><strong>Server state:</strong> TanStack Query only. Do not mirror server data in a global store.</li>
+          <li><strong>Local state:</strong> <code>useState</code> for component-local UI (filters, toggles).</li>
+          <li><strong>Shared UI state:</strong> Zustand for theme, sidebar, notifications, and active project.</li>
+          <li><strong>Derived data:</strong> compute charts and aggregates in memoised selectors, not in render body.</li>
         </ul>
       </section>
 
       <section class="card card-wide">
-        <h2>📜 Conventions &amp; decisions</h2>
-        <ol>
-          <li><strong>Single result schema:</strong> <code>wafpass-result.json</code> is the only contract between engine, server, dashboard, and exports.</li>
-          <li><strong>Versioned API:</strong> all server endpoints live under <code>/api/v1</code>; unversioned paths were removed.</li>
-          <li><strong>Monorepo-ish layout:</strong> each component is a separate git repo under a common umbrella directory; there is no shared orchestration file in this ADR.</li>
-          <li><strong>Docs separate from site:</strong> framework content lives in <code>framework</code> / <code>framework-en</code> (same repository, branches <code>main-de</code> / <code>main-en</code>); the website consumes them as Antora sources.</li>
-          <li><strong>Controls as data:</strong> WAF++ controls are YAML files, updated independently of the engine.</li>
-          <li><strong>SSO-ready:</strong> the server supports OIDC/SAML2 SSO; production brings its own IdP.</li>
-          <li><strong>Exclusion policy:</strong> demo, validation, UI widget, and AI-tooling folders are kept out of the core architecture ADR.</li>
-        </ol>
-      </section>
-
-      <section class="card card-wide">
-        <h2>🔗 References</h2>
-        <ul>
-          <li>WAF++ website: <a href="https://waf2p.dev" target="_blank" rel="noopener">https://waf2p.dev</a></li>
-          <li>English docs: <a href="https://waf2p.dev/docs/wafpp/1.0.2-en/" target="_blank" rel="noopener">https://waf2p.dev/docs/wafpp/1.0.2-en/</a></li>
-          <li>German docs: <a href="https://waf2p.dev/docs/wafpp/1.0.2-de/" target="_blank" rel="noopener">https://waf2p.dev/docs/wafpp/1.0.2-de/</a></li>
-          <li>Per-repo READMEs: <code>pass/README.md</code>, <code>wafpass-server/README.md</code>, <code>wafpass-dashboard/README.md</code>, <code>wafpass-mcp/README.md</code>, <code>wafpass-action/README.md</code>, <code>waf2p.github.io/README.md</code>, <code>framework/README.md</code>.</li>
+        <h2>🔒 Security & trust assumptions</h2>
+        <ul style="margin-bottom: 0;">
+          <li>Never store API keys in frontend code or environment files that ship to the browser.</li>
+          <li>The dashboard relies on the server's auth layer; route guards redirect unauthenticated users.</li>
+          <li>Sanitise any user-generated content rendered as HTML to avoid XSS.</li>
+          <li>Keep charting libraries updated; they handle SVG/DOM and can introduce DOM-based XSS if compromised.</li>
         </ul>
       </section>
     </article>
-
     <nav class="step-nav" aria-label="Previous and next steps">
-      <a class="btn btn-secondary" href="step-09.html">← Integrations</a>
-      <a class="btn btn-primary" href="index.html">Back to Cover →</a>
+      <a class="btn btn-secondary" href="step-09.html">← wafpass-server</a>
+      <a class="btn btn-primary" href="step-11.html">Next: Integrations →</a>
     </nav>
   </main>
 

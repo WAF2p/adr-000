@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WAF++ · ADR-000 · Repository Landscape</title>
   <meta name="description" content="Map of every repository in the WAF++ umbrella folder: framework, engine, server, dashboard, integrations, and website.">
-  <meta name="keywords" content="WAF++, ADR-000, repositories, pass, wafpass-server, wafpass-dashboard, wafpass-mcp, wafpass-action, waf2p.github.io">
+  <meta name="keywords" content="WAF++, ADR-000, repositories, wafpass-core, wafpass-server, wafpass-dashboard, wafpass-mcp, wafpass-action, waf2p.github.io">
   <meta name="author" content="S. Lewandowski, A. Lajko, S. Meyer, T. Urlaub">
   <meta property="og:type" content="article">
   <meta property="og:title" content="WAF++ · ADR-000 · Repository Landscape">
@@ -37,21 +37,23 @@
   </header>
 
   <main class="journey-main">
-        <nav class="progress-stepper" aria-label="Onboarding steps">
-      <a class="step" href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
-      <a class="step" href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
+    <nav class="progress-stepper" aria-label="Onboarding steps">
+      <a class="step " href="step-01.html"><span class="step-num">1</span><span class="step-label">WAF++</span></a>
+      <a class="step " href="step-02.html"><span class="step-num">2</span><span class="step-label">Framework</span></a>
       <a class="step active" href="step-03.html"><span class="step-num">3</span><span class="step-label">Repos</span></a>
-      <a class="step" href="step-04.html"><span class="step-num">4</span><span class="step-label">Architecture</span></a>
-      <a class="step" href="step-05.html"><span class="step-num">5</span><span class="step-label">Why?</span></a>
-      <a class="step" href="step-06.html"><span class="step-num">6</span><span class="step-label">Engine</span></a>
-      <a class="step" href="step-07.html"><span class="step-num">7</span><span class="step-label">Server</span></a>
-      <a class="step" href="step-08.html"><span class="step-num">8</span><span class="step-label">Dashboard</span></a>
-      <a class="step" href="step-09.html"><span class="step-num">9</span><span class="step-label">Integrations</span></a>
-      <a class="step" href="step-10.html"><span class="step-num">10</span><span class="step-label">Start</span></a>
+      <a class="step " href="step-04.html"><span class="step-num">4</span><span class="step-label">Map</span></a>
+      <a class="step " href="step-05.html"><span class="step-num">5</span><span class="step-label">Architecture</span></a>
+      <a class="step " href="step-06.html"><span class="step-num">6</span><span class="step-label">Contract</span></a>
+      <a class="step " href="step-07.html"><span class="step-num">7</span><span class="step-label">Why?</span></a>
+      <a class="step " href="step-08.html"><span class="step-num">8</span><span class="step-label">Engine</span></a>
+      <a class="step " href="step-09.html"><span class="step-num">9</span><span class="step-label">Server</span></a>
+      <a class="step " href="step-10.html"><span class="step-num">10</span><span class="step-label">Dashboard</span></a>
+      <a class="step " href="step-11.html"><span class="step-num">11</span><span class="step-label">Integrations</span></a>
+      <a class="step " href="step-12.html"><span class="step-num">12</span><span class="step-label">Start</span></a>
     </nav>
 
     <section class="step-hero">
-      <p class="step-kicker">Step 3 of 10</p>
+      <p class="step-kicker">Step 3 of 12</p>
       <h1>Repository Landscape</h1>
       <p class="step-lead">
         The umbrella directory groups independent repositories. Every component is its own git repository with its own lifecycle; they are wired together by the central result contract and the server API.
@@ -64,17 +66,17 @@
         <div class="table-wrap">
           <table class="data-table">
             <thead>
-              <tr><th>Repository</th><th>Short name</th><th>Technology</th><th>Purpose</th></tr>
+              <tr><th>Repository</th><th>Short name</th><th>Technology</th><th>Purpose</th><th>Open</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>framework</code></td><td>German docs</td><td>Antora / AsciiDoc</td><td>German framework edition</td></tr>
-              <tr><td><code>framework-en</code> (<code>main-en</code>)</td><td>English docs</td><td>Antora / AsciiDoc</td><td>English framework edition</td></tr>
-              <tr><td><code>waf2p.github.io</code></td><td>Website</td><td>Jekyll + Antora</td><td>Public site, blog, integrated docs</td></tr>
-              <tr><td><code>pass</code></td><td>wafpass-core</td><td>Python 3.11+</td><td>IaC compliance engine, CLI, PDF reporting</td></tr>
-              <tr><td><code>wafpass-server</code></td><td>Server</td><td>FastAPI / SQLAlchemy / PostgreSQL</td><td>REST API for scan results</td></tr>
-              <tr><td><code>wafpass-dashboard</code></td><td>Dashboard</td><td>React 18 / TypeScript / Vite</td><td>Browser SPA visualisation</td></tr>
-              <tr><td><code>wafpass-mcp</code></td><td>MCP bridge</td><td>Python / FastAPI / MCP SDK</td><td>AI assistant integration</td></tr>
-              <tr><td><code>wafpass-action</code></td><td>GitHub Action</td><td>Python composite action</td><td>CI/CD scan runner</td></tr>
+              <tr><td><code>framework</code></td><td>German docs</td><td>Antora / AsciiDoc</td><td>German framework edition</td><td><a class="repo-link" href="https://github.com/WAF2p/framework" target="_blank" rel="noopener">Open →</a></td></tr>
+              <tr><td><code>framework-en</code> (<code>main-en</code>)</td><td>English docs</td><td>Antora / AsciiDoc</td><td>English framework edition</td><td><a class="repo-link" href="https://github.com/WAF2p/framework" target="_blank" rel="noopener">Open →</a></td></tr>
+              <tr><td><code>waf2p.github.io</code></td><td>Website</td><td>Jekyll + Antora</td><td>Public site, blog, integrated docs</td><td><a class="repo-link" href="https://github.com/WAF2p/waf2p.github.io" target="_blank" rel="noopener">Open →</a></td></tr>
+              <tr><td><code>wafpass-core</code></td><td>Engine</td><td>Python 3.11+</td><td>IaC compliance engine, CLI, PDF reporting</td><td><a class="repo-link" href="https://github.com/WAF2p/wafpass-core" target="_blank" rel="noopener">Open →</a></td></tr>
+              <tr><td><code>wafpass-server</code></td><td>Server</td><td>FastAPI / SQLAlchemy / PostgreSQL</td><td>REST API for scan results</td><td><a class="repo-link" href="https://github.com/WAF2p/wafpass-server" target="_blank" rel="noopener">Open →</a></td></tr>
+              <tr><td><code>wafpass-dashboard</code></td><td>Dashboard</td><td>React 18 / TypeScript / Vite</td><td>Browser SPA visualisation</td><td><a class="repo-link" href="https://github.com/WAF2p/wafpass-dashboard" target="_blank" rel="noopener">Open →</a></td></tr>
+              <tr><td><code>wafpass-mcp</code></td><td>MCP bridge</td><td>Python / FastAPI / MCP SDK</td><td>AI assistant integration</td><td><a class="repo-link" href="https://github.com/WAF2p/wafpass-mcp" target="_blank" rel="noopener">Open →</a></td></tr>
+              <tr><td><code>wafpass-action</code></td><td>GitHub Action</td><td>Python composite action</td><td>CI/CD scan runner</td><td><a class="repo-link" href="https://github.com/WAF2p/wafpass-action" target="_blank" rel="noopener">Open →</a></td></tr>
             </tbody>
           </table>
         </div>
@@ -122,8 +124,8 @@
 │   ├── package.json                     # Node dependencies (Antora)
 │   └── _site/                           # Build output
 │
-├── pass/                                # wafpass-core compliance engine (Python)
-│   ├── wafpass/
+├── wafpass-core/                                # wafpass-core compliance engine (Python)
+│   ├── wafwafpass-core/
 │   │   ├── cli.py                       # Typer CLI entry point
 │   │   ├── schema.py                    # wafpass-result.json Pydantic contract
 │   │   ├── iac/
@@ -203,10 +205,9 @@
         </pre>
       </section>
     </article>
-
     <nav class="step-nav" aria-label="Previous and next steps">
-      <a class="btn btn-secondary" href="step-02.html">← Framework & framework-en</a>
-      <a class="btn btn-primary" href="step-04.html">Next: High-Level Architecture →</a>
+      <a class="btn btn-secondary" href="step-02.html">← Framework &amp; framework-en</a>
+      <a class="btn btn-primary" href="step-04.html">Next: Ecosystem Map →</a>
     </nav>
   </main>
 
